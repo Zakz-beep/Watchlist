@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
@@ -11,10 +10,11 @@ import {
   ChevronDown,
   ChevronsUpDown,
   Trash2,
-  RefreshCw,
   ExternalLink,
 } from "lucide-react";
 import { SparklineChart } from "./SparklineChart";
+import { TickerLogo } from "@/components/ui/TickerLogo";
+import { getAssetTypeColor, getSourceColor } from "@/lib/ticker-logo";
 import { formatPrice, formatLargeNumber, formatChangePercent, timeAgo, cn } from "@/lib/utils";
 import type { WatchlistItem } from "@/types/market";
 
@@ -27,24 +27,27 @@ interface WatchlistTableProps {
   isLoading?: boolean;
 }
 
-const SOURCE_COLORS: Record<string, string> = {
-  yahoo:   "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  binance: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  okx:     "bg-blue-500/15 text-blue-400 border-blue-500/30",
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  stock:  "bg-slate-500/15 text-slate-400",
-  crypto: "bg-orange-500/15 text-orange-400",
-  forex:  "bg-green-500/15 text-green-400",
-  index:  "bg-pink-500/15 text-pink-400",
-  etf:    "bg-cyan-500/15 text-cyan-400",
-};
-
 function SortIcon({ field, sortField, sortDir }: { field: string; sortField: string | null; sortDir: SortDir }) {
   if (field !== sortField) return <ChevronsUpDown className="w-3.5 h-3.5 opacity-30" />;
   if (sortDir === "asc") return <ChevronUp className="w-3.5 h-3.5 text-primary" />;
   return <ChevronDown className="w-3.5 h-3.5 text-primary" />;
+}
+
+function getExternalUrl(symbol: string, source: string): string {
+  const upper = symbol.toUpperCase();
+  if (source === "binance") {
+    if (upper.match(/(\.P|\.PERP|_PERP)$/i)) {
+      const clean = upper.replace(/(\.P|\.PERP|_PERP)$/i, "");
+      return `https://www.binance.com/en/futures/${clean}`;
+    }
+    return `https://www.binance.com/en/trade/${upper}`;
+  }
+  if (source === "okx") {
+    return upper.includes("-SWAP")
+      ? `https://www.okx.com/trade-swap/${upper.toLowerCase()}`
+      : `https://www.okx.com/trade-spot/${upper.toLowerCase()}`;
+  }
+  return `https://finance.yahoo.com/quote/${encodeURIComponent(upper)}`;
 }
 
 export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTableProps) {
@@ -62,7 +65,7 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
     });
   }, []);
 
-  // Client-side sort (backed by WASM when available)
+  // Client-side sort
   const sortedItems = [...items].sort((a, b) => {
     if (!sortField || !sortDir) return 0;
     const ap = a.priceData;
@@ -155,28 +158,36 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
 
               return (
                 <motion.tr
-                  key={item.id}
+                  key={`${item.id}-${i}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ delay: i * 0.03 }}
                   className="border-b border-border/20 hover:bg-muted/20 transition-colors group"
                 >
-                  {/* Asset */}
+                  {/* Asset with Ticker Logo */}
                   <td className="px-4 py-4 pl-6">
                     <div className="flex items-center gap-3">
+                      <TickerLogo
+                        symbol={item.symbol}
+                        name={item.name}
+                        assetType={item.assetType}
+                        size={36}
+                      />
                       <div>
-                        <div className="font-semibold text-sm">{item.symbol}</div>
-                        <div className="text-xs text-muted-foreground">{item.name}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm">{item.symbol}</span>
+                          <span
+                            className={cn(
+                              "text-[10px] px-1.5 py-0.2 rounded font-semibold border uppercase",
+                              getAssetTypeColor(item.assetType)
+                            )}
+                          >
+                            {item.assetType}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate max-w-[160px]">{item.name}</div>
                       </div>
-                      <span
-                        className={cn(
-                          "text-xs px-1.5 py-0.5 rounded font-medium",
-                          TYPE_COLORS[item.assetType] ?? "bg-muted text-muted-foreground"
-                        )}
-                      >
-                        {item.assetType}
-                      </span>
                     </div>
                   </td>
 
@@ -184,8 +195,8 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
                   <td className="px-4 py-4">
                     <span
                       className={cn(
-                        "text-xs px-2 py-0.5 rounded-full border font-semibold uppercase tracking-wider",
-                        SOURCE_COLORS[item.source] ?? "bg-muted text-muted-foreground border-border"
+                        "text-[10px] px-2 py-0.5 rounded-full border font-semibold uppercase tracking-wider",
+                        getSourceColor(item.source)
                       )}
                     >
                       {item.source}
@@ -246,17 +257,11 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
                   <td className="px-2 py-4">
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <a
-                        href={
-                          item.source === "yahoo"
-                            ? `https://finance.yahoo.com/quote/${item.symbol}`
-                            : item.source === "binance"
-                            ? `https://www.binance.com/en/trade/${item.symbol}`
-                            : `https://www.okx.com/trade-spot/${item.symbol.toLowerCase()}`
-                        }
+                        href={getExternalUrl(item.symbol, item.source)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
-                        title="Open on source"
+                        title="Open on exchange / source"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
