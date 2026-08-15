@@ -25,10 +25,17 @@ export default function LoginPage() {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       
       const errorMsg = searchParams.get("error_description") || hashParams.get("error_description");
-      if (errorMsg) {
-        setError(decodeURIComponent(errorMsg).replace(/\+/g, " "));
-      } else if (searchParams.get("error") === "oauth_failed") {
-        setError("OAuth authentication failed. Check your Google Client ID/Secret in Supabase Dashboard.");
+      const isOAuthFailed = searchParams.get("error") === "oauth_failed";
+
+      if (errorMsg || isOAuthFailed) {
+        const timer = setTimeout(() => {
+          if (errorMsg) {
+            setError(decodeURIComponent(errorMsg).replace(/\+/g, " "));
+          } else if (isOAuthFailed) {
+            setError("OAuth authentication failed. Check your Google Client ID/Secret in Supabase Dashboard.");
+          }
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }
   }, []);
