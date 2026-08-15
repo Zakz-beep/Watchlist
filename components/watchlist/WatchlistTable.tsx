@@ -33,6 +33,33 @@ function SortIcon({ field, sortField, sortDir }: { field: string; sortField: str
   return <ChevronDown className="w-3.5 h-3.5 text-primary" />;
 }
 
+interface HeaderCellProps {
+  field: SortField;
+  label: string;
+  className?: string;
+  sortField: SortField | null;
+  sortDir: SortDir;
+  onSort: (field: SortField) => void;
+}
+
+// Declared outside of render to prevent React 19 component-creation-during-render errors
+function HeaderCell({ field, label, className, sortField, sortDir, onSort }: HeaderCellProps) {
+  return (
+    <th
+      className={cn(
+        "px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer select-none group transition-colors hover:text-foreground",
+        className
+      )}
+      onClick={() => onSort(field)}
+    >
+      <div className="flex items-center gap-1.5">
+        {label}
+        <SortIcon field={field} sortField={sortField} sortDir={sortDir} />
+      </div>
+    </th>
+  );
+}
+
 function getExternalUrl(symbol: string, source: string): string {
   const upper = symbol.toUpperCase();
   if (source === "binance") {
@@ -85,29 +112,6 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
     return sortDir === "asc" ? av - bv : bv - av;
   });
 
-  const HeaderCell = ({
-    field,
-    label,
-    className,
-  }: {
-    field: SortField;
-    label: string;
-    className?: string;
-  }) => (
-    <th
-      className={cn(
-        "px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer select-none group transition-colors hover:text-foreground",
-        className
-      )}
-      onClick={() => handleSort(field)}
-    >
-      <div className="flex items-center gap-1.5">
-        {label}
-        <SortIcon field={field} sortField={sortField} sortDir={sortDir} />
-      </div>
-    </th>
-  );
-
   if (isLoading) {
     return (
       <div className="space-y-2 p-4">
@@ -133,17 +137,17 @@ export function WatchlistTable({ items, onRemove, isLoading }: WatchlistTablePro
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border/40">
-            <HeaderCell field="symbol"        label="Asset"   className="pl-6" />
+            <HeaderCell field="symbol"        label="Asset"   className="pl-6" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Source
             </th>
-            <HeaderCell field="price"         label="Price"   className="text-right" />
-            <HeaderCell field="changePercent" label="24h %"   className="text-right" />
+            <HeaderCell field="price"         label="Price"   className="text-right" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <HeaderCell field="changePercent" label="24h %"   className="text-right" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               7d
             </th>
-            <HeaderCell field="volume"        label="Volume"  className="text-right" />
-            <HeaderCell field="marketCap"     label="Mkt Cap" className="text-right" />
+            <HeaderCell field="volume"        label="Volume"  className="text-right" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <HeaderCell field="marketCap"     label="Mkt Cap" className="text-right" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider pr-6">
               Updated
             </th>
