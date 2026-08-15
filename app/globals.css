@@ -1,26 +1,140 @@
+/* app/globals.css */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --radius: 0.5rem;
+
+    /* Brand / App colors */
+    --brand-primary: 217 91% 60%;    /* vivid blue */
+    --brand-accent: 262 83% 58%;     /* purple */
+    --brand-green: 142 71% 45%;      /* gain green */
+    --brand-red: 0 84% 60%;          /* loss red */
+    --brand-gold: 43 96% 56%;        /* gold/amber */
+    --surface-glass: 0 0% 100% / 0.06;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 6%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 6%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: hsl(var(--surface-glass));
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid hsl(var(--border) / 0.3);
+}
+
+/* Animated gradient background */
+.gradient-mesh {
+  background: 
+    radial-gradient(ellipse 80% 80% at 20% -20%, hsl(217 91% 60% / 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 80% at 80% 120%, hsl(262 83% 58% / 0.12) 0%, transparent 50%),
+    hsl(var(--background));
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 9999px;
+}
+
+/* Price change colors */
+.text-gain { color: hsl(var(--brand-green)); }
+.text-loss { color: hsl(var(--brand-red)); }
+.bg-gain   { background-color: hsl(var(--brand-green) / 0.1); }
+.bg-loss   { background-color: hsl(var(--brand-red) / 0.1); }
+
+/* Ticker animation */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-animate {
+  animation: ticker-scroll 40s linear infinite;
+}
+.ticker-animate:hover {
+  animation-play-state: paused;
+}
+
+/* Shimmer skeleton */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 40px hsl(217 91% 60% / 0.15), 0 0 80px hsl(217 91% 60% / 0.05);
+}
+.glow-purple {
+  box-shadow: 0 0 40px hsl(262 83% 58% / 0.15), 0 0 80px hsl(262 83% 58% / 0.05);
 }

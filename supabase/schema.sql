@@ -3,6 +3,13 @@
 -- Run this in the Supabase SQL Editor
 -- ============================================================
 
+-- ─── GOOGLE OAUTH & REDIRECT CONFIGURATION ───────────────────
+-- 1. Enable Google in Supabase Dashboard -> Authentication -> Providers -> Google
+-- 2. Client ID & Client Secret from Google Cloud Console (OAuth 2.0 Client IDs)
+-- 3. Google Authorized Redirect URI: https://<YOUR_SUPABASE_PROJECT_ID>.supabase.co/auth/v1/callback
+-- 4. Supabase Redirect URL: http://localhost:3000/auth/callback
+-- ─────────────────────────────────────────────────────────────
+
 -- ─── Watchlists ───────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS watchlists (
   id          UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -55,6 +62,35 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE TRIGGER trigger_watchlists_updated_at
   BEFORE UPDATE ON watchlists
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ─── New User Automatic Watchlist Setup Trigger ──────────
+CREATE OR REPLACE FUNCTION handle_new_user_watchlist()
+RETURNS TRIGGER AS $$
+DECLARE
+  new_watchlist_id UUID;
+BEGIN
+  -- Create default watchlist
+  INSERT INTO watchlists (user_id, name)
+  VALUES (NEW.id, 'My Watchlist')
+  RETURNING id INTO new_watchlist_id;
+
+  -- Insert default starter assets
+  INSERT INTO watchlist_items (watchlist_id, symbol, name, source, asset_type)
+  VALUES
+    (new_watchlist_id, 'BTCUSDT', 'Bitcoin', 'binance', 'crypto'),
+    (new_watchlist_id, 'ETHUSDT', 'Ethereum', 'binance', 'crypto'),
+    (new_watchlist_id, 'AAPL', 'Apple Inc.', 'yahoo', 'stock'),
+    (new_watchlist_id, 'NVDA', 'NVIDIA', 'yahoo', 'stock'),
+    (new_watchlist_id, '^GSPC', 'S&P 500', 'yahoo', 'index');
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger whenever a user registers (Email or Google OAuth)
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user_watchlist();
 
 -- ─── Row Level Security ───────────────────────────────────
 ALTER TABLE watchlists      ENABLE ROW LEVEL SECURITY;
