@@ -47,11 +47,16 @@ export interface PriceAlert {
   userId: string;
   symbol: string;
   source: AssetSource;
-  condition: "above" | "below";
+  condition: "above" | "below" | "pct_change_up" | "pct_change_down";
   targetPrice: number;
   triggered: boolean;
+  triggeredAt?: string;
   createdAt: string;
+  notes?: string;
+  notificationChannels?: ("browser" | "telegram" | "sound")[];
+  telegramChatId?: string;
 }
+
 
 // Ticker bar item (landing page)
 export interface TickerItem {
