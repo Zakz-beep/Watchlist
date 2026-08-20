@@ -14,12 +14,13 @@ import {
   TrendingDown,
   Trash2,
   Star,
-  UserCheck,
   Database,
   HardDrive,
   LayoutGrid,
   List,
   Filter,
+  FolderPlus,
+  Layers3,
 } from "lucide-react";
 import { AddSymbolDialog } from "@/components/watchlist/AddSymbolDialog";
 import { TickerLogo } from "@/components/ui/TickerLogo";
@@ -33,11 +34,15 @@ async function fetchPrices(items: Omit<WatchlistItem, "priceData">[]): Promise<P
   const binanceSyms = items.filter((i) => i.source === "binance").map((i) => i.symbol);
   const yahooSyms   = items.filter((i) => i.source === "yahoo").map((i) => i.symbol);
   const okxSyms     = items.filter((i) => i.source === "okx").map((i) => i.symbol);
+  const bingxSyms   = items.filter((i) => i.source === "bingx").map((i) => i.symbol);
+  const hyperliquidSyms = items.filter((i) => i.source === "hyperliquid").map((i) => i.symbol);
 
   const fetches = [];
   if (binanceSyms.length) fetches.push(fetch(`/api/prices/binance?symbols=${binanceSyms.join(",")}`).then((r) => r.json()));
   if (yahooSyms.length)   fetches.push(fetch(`/api/prices/yahoo?symbols=${yahooSyms.join(",")}`).then((r) => r.json()));
   if (okxSyms.length)     fetches.push(fetch(`/api/prices/okx?symbols=${okxSyms.join(",")}`).then((r) => r.json()));
+  if (bingxSyms.length)   fetches.push(fetch(`/api/prices/bingx?symbols=${bingxSyms.join(",")}`).then((r) => r.json()));
+  if (hyperliquidSyms.length) fetches.push(fetch(`/api/prices/hyperliquid?symbols=${hyperliquidSyms.join(",")}`).then((r) => r.json()));
 
   const results = await Promise.allSettled(fetches);
   return results.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
@@ -55,7 +60,7 @@ function fmt(v: number, prefix = "$"): string {
 /* ─── types ───────────────────────────────────────────────── */
 type ViewMode = "grid" | "list";
 type SortKey  = "symbol" | "price" | "change" | "volume" | "added";
-type FilterType = "all" | "crypto" | "stock" | "etf" | "index" | "forex";
+type FilterType = "all" | "crypto" | "stock" | "etf" | "index" | "forex" | "commodity";
 
 /* ─── sub components ──────────────────────────────────────── */
 function PriceChange({ pct }: { pct?: number }) {
@@ -81,7 +86,7 @@ function WatchlistCard({ item, onRemove, index }: { item: WatchlistItem; onRemov
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ delay: index * 0.04 }}
       layout
-      className="group relative glass border border-border/40 rounded-2xl p-5 hover:border-border/70 transition-all hover:shadow-lg"
+      className="group relative ios-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg"
     >
       {/* Remove button */}
       <button
@@ -217,12 +222,14 @@ function WatchlistRow({ item, onRemove, index }: { item: WatchlistItem; onRemove
 
 /* ─── Main Page ───────────────────────────────────────────── */
 export default function WatchlistPage() {
-  const { items, user, loading: watchlistLoading, addItem, removeItem } = useWatchlist();
+  const { items, user, loading: watchlistLoading, watchlists, activeWatchlistId, activeWatchlist, selectWatchlist, createWatchlist, addItem, removeItem } = useWatchlist();
   const [addOpen, setAddOpen]   = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortKey, setSortKey]   = useState<SortKey>("added");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [search, setSearch]     = useState("");
+  const [newGroupName, setNewGroupName] = useState("");
+  const [creatingGroup, setCreatingGroup] = useState(false);
 
   /* Fetch live prices */
   const { data: prices, isLoading, refetch } = useQuery({
@@ -268,7 +275,16 @@ export default function WatchlistPage() {
     { label: "ETF", value: "etf" },
     { label: "Index", value: "index" },
     { label: "Forex", value: "forex" },
+    { label: "Commodities", value: "commodity" },
   ];
+
+  const handleCreateGroup = async () => {
+    if (!newGroupName.trim()) return;
+    setCreatingGroup(true);
+    const created = await createWatchlist(newGroupName);
+    if (created) setNewGroupName("");
+    setCreatingGroup(false);
+  };
 
   return (
     <div className="space-y-6 max-w-screen-2xl mx-auto">
@@ -277,7 +293,7 @@ export default function WatchlistPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <Star className="w-5 h-5 text-yellow-400 fill-yellow-400/30" />
-            <h2 className="text-2xl font-bold tracking-tight">My Watchlist</h2>
+            <h2 className="text-2xl font-bold tracking-tight">{activeWatchlist?.name ?? "My Watchlist"}</h2>
             {user ? (
               <span className="flex items-center gap-1 text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">
                 <Database className="w-3 h-3" />
@@ -298,20 +314,60 @@ export default function WatchlistPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => refetch()}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border/40 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+            className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/70 px-3.5 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all"
           >
             <RefreshCw className={cn("w-3.5 h-3.5", isLoading && "animate-spin")} />
             Refresh
           </button>
           <button
             onClick={() => setAddOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+            className="ios-button flex items-center gap-1.5 px-4 py-2 text-sm font-semibold"
           >
             <Plus className="w-4 h-4" />
             Add Symbol
           </button>
         </div>
       </div>
+
+      {/* ── Watchlist groups ── */}
+      <section className="ios-card p-3 sm:p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5 mr-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <Layers3 className="w-3.5 h-3.5" /> Groups
+          </div>
+          {watchlists.map((watchlist) => (
+            <button
+              key={watchlist.id}
+              onClick={() => selectWatchlist(watchlist.id)}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
+                activeWatchlistId === watchlist.id
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-blue-500/20"
+                  : "border-border/60 bg-card/60 text-muted-foreground hover:text-foreground hover:border-border"
+              )}
+            >
+              {watchlist.name}
+            </button>
+          ))}
+          <div className="flex items-center gap-1.5 ml-auto w-full sm:w-auto">
+            <input
+              value={newGroupName}
+              onChange={(event) => setNewGroupName(event.target.value)}
+              onKeyDown={(event) => { if (event.key === "Enter") void handleCreateGroup(); }}
+              maxLength={48}
+              placeholder="New group (e.g. Crypto)"
+              className="min-w-0 flex-1 sm:w-48 rounded-xl border border-border/50 bg-background/45 px-3 py-1.5 text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+            <button
+              onClick={() => void handleCreateGroup()}
+              disabled={creatingGroup || !newGroupName.trim()}
+              className="flex shrink-0 items-center gap-1.5 rounded-xl border border-border/50 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/40 disabled:opacity-45 transition-colors"
+            >
+              <FolderPlus className="w-3.5 h-3.5" /> Add group
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* ── Summary Stats ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -327,7 +383,7 @@ export default function WatchlistPage() {
               key={s.label}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass border border-border/40 rounded-2xl p-4"
+              className="ios-card p-4"
             >
               <div className="flex items-center gap-2 mb-1">
                 <Icon className={cn("w-4 h-4", s.color)} />
@@ -348,7 +404,7 @@ export default function WatchlistPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search symbol or name…"
-            className="w-full pl-9 pr-4 py-2 bg-muted/30 border border-border/40 rounded-xl text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all"
+            className="w-full rounded-2xl border border-border/60 bg-card/70 py-2 pl-9 pr-4 text-sm placeholder:text-muted-foreground/60 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
@@ -361,8 +417,8 @@ export default function WatchlistPage() {
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
                 filterType === f.value
-                  ? "bg-foreground text-background border-transparent"
-                  : "border-border/40 text-muted-foreground hover:text-foreground hover:border-border"
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-blue-500/20"
+                  : "border-border/60 bg-card/60 text-muted-foreground hover:text-foreground hover:border-border"
               )}
             >
               {f.label}
@@ -390,13 +446,13 @@ export default function WatchlistPage() {
         <div className="flex border border-border/40 rounded-xl overflow-hidden">
           <button
             onClick={() => setViewMode("grid")}
-            className={cn("p-2 transition-colors", viewMode === "grid" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground hover:bg-muted/30")}
+            className={cn("p-2 transition-colors", viewMode === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/70")}
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode("list")}
-            className={cn("p-2 transition-colors", viewMode === "list" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground hover:bg-muted/30")}
+            className={cn("p-2 transition-colors", viewMode === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/70")}
           >
             <List className="w-4 h-4" />
           </button>
@@ -408,7 +464,7 @@ export default function WatchlistPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="glass border border-border/40 rounded-2xl p-16 text-center"
+          className="ios-card p-16 text-center"
         >
           <Star className="w-10 h-10 mx-auto mb-4 text-muted-foreground/30" />
           <p className="font-semibold mb-1">{search || filterType !== "all" ? "No matching assets" : "Your watchlist is empty"}</p>
@@ -418,7 +474,7 @@ export default function WatchlistPage() {
           {!search && filterType === "all" && (
             <button
               onClick={() => setAddOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all mx-auto"
+              className="ios-button mx-auto flex items-center gap-2 px-4 py-2 text-sm font-semibold"
             >
               <Plus className="w-4 h-4" />
               Add Symbol
@@ -431,7 +487,7 @@ export default function WatchlistPage() {
       {watchlistLoading && (
         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="glass border border-border/40 rounded-2xl p-5 animate-pulse h-44" />
+            <div key={i} className="ios-card h-44 p-5 animate-pulse" />
           ))}
         </div>
       )}
@@ -452,7 +508,7 @@ export default function WatchlistPage() {
 
       {/* ── List View ── */}
       {!watchlistLoading && viewMode === "list" && filtered.length > 0 && (
-        <div className="glass border border-border/40 rounded-2xl overflow-hidden">
+        <div className="ios-card overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border/40 bg-muted/10">

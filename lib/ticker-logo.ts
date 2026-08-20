@@ -7,6 +7,21 @@ export type LogoSource = "clearbit" | "financialmodelingprep" | "coingecko" | "f
  * Map of crypto symbols (Binance/OKX/Futures) to CoinGecko coin IDs
  */
 const COINGECKO_ID_MAP: Record<string, string> = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  SOL: "solana",
+  HYPE: "hyperliquid",
+  DOGE: "dogecoin",
+  XRP: "ripple",
+  AVAX: "avalanche-2",
+  LINK: "chainlink",
+  SUI: "sui",
+  APT: "aptos",
+  ARB: "arbitrum",
+  OP: "optimism",
+  WIF: "dogwifcoin",
+  TIA: "celestia",
+  INJ: "injective-protocol",
   BTCUSDT: "bitcoin",
   ETHUSDT: "ethereum",
   BNBUSDT: "binancecoin",
@@ -50,6 +65,21 @@ const COINGECKO_ID_MAP: Record<string, string> = {
   "BNB-USDT": "binancecoin",
   "DOGE-USDT": "dogecoin",
   "XRP-USDT": "ripple",
+};
+
+// CoinGecko's old URL pattern needs a numeric image ID. Keep a compact list of
+// verified URLs for the most common tickers; every other asset gets an in-app
+// initials avatar instead of a broken remote image.
+const VERIFIED_CRYPTO_IMAGES: Record<string, string> = {
+  BTC: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+  ETH: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+  SOL: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+  DOGE: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
+  XRP: "https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png",
+  AVAX: "https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
+  LINK: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
+  UNI: "https://assets.coingecko.com/coins/images/12504/large/uniswap-uni.png",
+  AAVE: "https://assets.coingecko.com/coins/images/12645/large/AAVE.png",
 };
 
 /**
@@ -109,6 +139,7 @@ const YAHOO_DOMAIN_MAP: Record<string, string> = {
   SQ: "block.xyz",
   HOOD: "robinhood.com",
   PLTR: "palantir.com",
+  SMH: "vaneck.com",
   RBLX: "roblox.com",
   ZM: "zoom.us",
   SPOT: "spotify.com",
@@ -123,26 +154,18 @@ const YAHOO_DOMAIN_MAP: Record<string, string> = {
 export function getTickerLogo(symbol: string, assetType: string): string | null {
   const rawUpper = symbol.toUpperCase();
   // Strip perpetual suffixes for logo lookup (.P, .PERP, _PERP, -SWAP)
-  const cleanUpper = rawUpper.replace(/\.P$|\.PERP$|_PERP$|-SWAP$/i, "");
+  const cleanUpper = rawUpper.replace(/\.P$|\.PERP$|_PERP$|-SWAP$/i, "").split(":").at(-1) ?? rawUpper;
+  const cryptoKey = cleanUpper.replace(/(USDT|USDC)$/, "");
 
-  // Crypto: use CoinGecko image API
-  const geckoId = COINGECKO_ID_MAP[cleanUpper] || COINGECKO_ID_MAP[rawUpper];
-  if (geckoId) {
-    return `https://assets.coingecko.com/coins/images/large/${geckoId}.png`;
+  const cryptoImage = VERIFIED_CRYPTO_IMAGES[cryptoKey];
+  if (cryptoImage) {
+    return cryptoImage;
   }
 
   // Stock/ETF: use Clearbit logo API via company domain
   const domain = YAHOO_DOMAIN_MAP[cleanUpper] || YAHOO_DOMAIN_MAP[rawUpper];
   if (domain) {
-    return `https://logo.clearbit.com/${domain}`;
-  }
-
-  // Fallback: try Financial Modeling Prep logo (works for many tickers)
-  if (assetType === "stock" || assetType === "etf") {
-    const cleanSym = cleanUpper.replace(/\^/g, "").replace(/=F$/, "");
-    if (cleanSym && !cleanSym.startsWith("^") && cleanSym.length <= 5) {
-      return `https://financialmodelingprep.com/image-stock/${cleanSym}.png`;
-    }
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
   }
 
   return null;
@@ -158,6 +181,7 @@ export function getAssetTypeColor(assetType: string): string {
     case "etf":     return "bg-green-500/15 text-green-400 border-green-500/30";
     case "index":   return "bg-purple-500/15 text-purple-400 border-purple-500/30";
     case "forex":   return "bg-orange-500/15 text-orange-400 border-orange-500/30";
+    case "commodity": return "bg-amber-500/15 text-amber-400 border-amber-500/30";
     default:        return "bg-muted text-muted-foreground border-border/40";
   }
 }
@@ -167,6 +191,8 @@ export function getSourceColor(source: string): string {
     case "binance": return "bg-yellow-500/15 text-yellow-400 border-yellow-500/30";
     case "yahoo":   return "bg-purple-500/15 text-purple-400 border-purple-500/30";
     case "okx":     return "bg-blue-500/15 text-blue-400 border-blue-500/30";
+    case "bingx":   return "bg-cyan-500/15 text-cyan-400 border-cyan-500/30";
+    case "hyperliquid": return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
     default:        return "bg-muted text-muted-foreground";
   }
 }

@@ -1,0 +1,6 @@
+int color app_background 0x7f010000
+int color system_blue 0x7f010001
+int id loading_indicator 0x7f020000
+int id webview 0x7f020001
+int layout activity_main 0x7f030000
+int style Theme_MarketWatch 0x7f040000

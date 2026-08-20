@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BarChart3, Mail, Lock, Loader2, Eye, EyeOff, AlertCircle, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { getAuthRedirectUrl } from "@/lib/auth-url";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function LoginPage() {
       return;
     }
 
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = getAuthRedirectUrl();
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider,
       options: {

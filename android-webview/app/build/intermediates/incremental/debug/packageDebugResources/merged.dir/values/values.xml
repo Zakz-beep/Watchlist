@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_background">#F7F9FC</color>
+    <color name="system_blue">#0A84FF</color>
+    <style name="Theme.MarketWatch" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/system_blue</item>
+    </style>
+</resources>

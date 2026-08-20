@@ -16,10 +16,13 @@ export function Navbar() {
   const { user, signOut } = useUser();
 
   useEffect(() => {
-    setMounted(true);
+    const frame = window.requestAnimationFrame(() => setMounted(true));
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   const navLinks = user
@@ -33,13 +36,13 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass border-b border-border/40 shadow-lg" : "bg-transparent"
+        scrolled ? "glass border-b border-border/60 shadow-lg shadow-slate-900/5" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <div className="p-1.5 rounded-lg bg-foreground text-background">
+        <Link href="/" className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
+          <div className="p-2 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-blue-500/20">
             <BarChart3 className="w-4 h-4" />
           </div>
           <span>MarketWatch</span>
@@ -51,7 +54,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors font-semibold"
             >
               {link.label}
             </Link>
@@ -61,7 +64,7 @@ export function Navbar() {
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg border border-border/40 glass hover:bg-muted/50 transition-colors"
+              className="p-2 rounded-full border border-border/60 glass hover:bg-muted/70 transition-colors"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
@@ -80,14 +83,14 @@ export function Navbar() {
               </span>
               <Link
                 href="/dashboard"
-                className="px-4 py-2 rounded-lg text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all hover:-translate-y-0.5 shadow-sm"
+                className="ios-button px-4 py-2 text-sm font-semibold"
               >
                 Go to Dashboard
               </Link>
               <button
                 onClick={signOut}
                 title="Sign Out"
-                className="p-2 rounded-lg border border-border/40 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                className="p-2 rounded-full border border-border/60 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -95,7 +98,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/dashboard"
-              className="px-4 py-2 rounded-lg text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all hover:-translate-y-0.5 shadow-sm"
+              className="ios-button px-4 py-2 text-sm font-semibold"
             >
               Open App
             </Link>
@@ -107,7 +110,7 @@ export function Navbar() {
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg glass border border-border/40"
+              className="p-2 rounded-full glass border border-border/60"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -115,7 +118,7 @@ export function Navbar() {
           )}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg glass border border-border/40"
+            className="p-2 rounded-full glass border border-border/60"
             aria-label="Menu"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -130,7 +133,7 @@ export function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden glass border-b border-border/40 px-4 pb-4 pt-2 space-y-2"
+            className="md:hidden glass border-b border-border/60 px-4 pb-4 pt-2 space-y-2"
           >
             {user && (
               <div className="py-2 text-xs text-muted-foreground flex items-center gap-2 border-b border-border/20">
@@ -144,7 +147,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block py-2.5 text-sm text-muted-foreground hover:text-foreground border-b border-border/20 last:border-0 transition-colors font-medium"
+                className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/70 rounded-2xl transition-colors font-semibold"
               >
                 {link.label}
               </Link>
@@ -168,4 +171,3 @@ export function Navbar() {
     </nav>
   );
 }
-

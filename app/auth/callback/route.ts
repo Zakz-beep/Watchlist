@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co";
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder-key";
 
-    let response = NextResponse.redirect(`${origin}${next}`);
+    const response = NextResponse.redirect(`${origin}${next}`);
 
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {

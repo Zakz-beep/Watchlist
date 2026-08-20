@@ -1,7 +1,13 @@
 // app/api/prices/binance/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const BINANCE_SPOT_BASE = "https://api.binance.com/api/v3";
+// Binance recommends the market-data-only host for public price requests. Keep
+// the main API as a fallback because availability can vary by Vercel region.
+const BINANCE_SPOT_BASES = [
+  "https://data-api.binance.vision/api/v3",
+  "https://api.binance.com/api/v3",
+  "https://api1.binance.com/api/v3",
+];
 const BINANCE_FUTURES_BASE = "https://fapi.binance.com/fapi/v1";
 
 interface TickerResult {
@@ -14,6 +20,28 @@ interface TickerResult {
   high24h: number;
   low24h: number;
   updatedAt: number;
+}
+
+async function fetchSpotTickerBatch(symbols: string[]) {
+  const symbolsJson = JSON.stringify(symbols);
+  const query = `ticker/24hr?symbols=${encodeURIComponent(symbolsJson)}`;
+  const failures: string[] = [];
+
+  for (const baseUrl of BINANCE_SPOT_BASES) {
+    try {
+      const response = await fetch(`${baseUrl}/${query}`, {
+        next: { revalidate: 5 },
+      });
+
+      if (response.ok) return response.json();
+      failures.push(`${new URL(baseUrl).hostname}: ${response.status}`);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "network error";
+      failures.push(`${new URL(baseUrl).hostname}: ${detail}`);
+    }
+  }
+
+  throw new Error(`All Binance spot endpoints failed (${failures.join(", ")})`);
 }
 
 export async function GET(req: NextRequest) {
@@ -44,30 +72,22 @@ export async function GET(req: NextRequest) {
     // 1. Fetch Binance Spot symbols in batch if any
     if (spotSyms.length > 0) {
       try {
-        const symbolsJson = JSON.stringify(spotSyms.map((s) => s.clean));
-        const res = await fetch(
-          `${BINANCE_SPOT_BASE}/ticker/24hr?symbols=${encodeURIComponent(symbolsJson)}`,
-          { next: { revalidate: 5 } }
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data.forEach((item: any) => {
-              results.push({
-                symbol: item.symbol,
-                source: "binance",
-                price: parseFloat(item.lastPrice),
-                change: parseFloat(item.priceChange),
-                changePercent: parseFloat(item.priceChangePercent),
-                volume: parseFloat(item.volume),
-                high24h: parseFloat(item.highPrice),
-                low24h: parseFloat(item.lowPrice),
-                updatedAt: item.closeTime || Date.now(),
-              });
+        const data = await fetchSpotTickerBatch(spotSyms.map((symbol) => symbol.clean));
+        if (Array.isArray(data)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.forEach((item: any) => {
+            results.push({
+              symbol: item.symbol,
+              source: "binance",
+              price: parseFloat(item.lastPrice),
+              change: parseFloat(item.priceChange),
+              changePercent: parseFloat(item.priceChangePercent),
+              volume: parseFloat(item.volume),
+              high24h: parseFloat(item.highPrice),
+              low24h: parseFloat(item.lowPrice),
+              updatedAt: item.closeTime || Date.now(),
             });
-          }
+          });
         }
       } catch (e) {
         console.warn("[Binance Spot Fetch Error]", e);

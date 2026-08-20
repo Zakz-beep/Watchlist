@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.marketwatch.app-debug-4:/values_values.arsc.flat",
+            "map": [
+                {
+                    "source": "C:\\Users\\Akbar Alviansyah\\Downloads\\Webview and Watchlist\\app\\android-webview\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,104",
+                        "endColumns": "48,45",
+                        "endOffsets": "99,145"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Akbar Alviansyah\\Downloads\\Webview and Watchlist\\app\\android-webview\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "337"
+                    },
+                    "to": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "150",
+                        "endLines": "8",
+                        "endColumns": "12",
+                        "endOffsets": "432"
+                    }
+                }
+            ]
+        }
+    ]
+}

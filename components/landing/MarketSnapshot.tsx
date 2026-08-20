@@ -7,8 +7,8 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 import { formatPrice, formatChangePercent, formatLargeNumber } from "@/lib/utils";
 
 const SNAPSHOT_ASSETS = [
-  { symbol: "BTCUSDT", name: "Bitcoin", icon: "₿", source: "binance", color: "from-orange-500/20 to-yellow-500/20" },
-  { symbol: "ETHUSDT", name: "Ethereum", icon: "Ξ", source: "binance", color: "from-blue-500/20 to-cyan-500/20" },
+  { symbol: "BTC",     name: "Bitcoin Perpetual", icon: "₿", source: "hyperliquid", color: "from-orange-500/20 to-yellow-500/20" },
+  { symbol: "ETH",     name: "Ethereum Perpetual", icon: "Ξ", source: "hyperliquid", color: "from-blue-500/20 to-cyan-500/20" },
   { symbol: "AAPL",    name: "Apple",   icon: "", source: "yahoo",   color: "from-slate-500/20 to-gray-500/20" },
   { symbol: "NVDA",    name: "NVIDIA",  icon: "⬡", source: "yahoo",  color: "from-green-500/20 to-emerald-500/20" },
   { symbol: "^GSPC",   name: "S&P 500", icon: "📈", source: "yahoo", color: "from-purple-500/20 to-violet-500/20" },
@@ -24,20 +24,20 @@ type PriceResult = {
 };
 
 async function fetchSnapshotPrices(): Promise<PriceResult[]> {
-  const binanceSyms = SNAPSHOT_ASSETS.filter((a) => a.source === "binance")
+  const hyperliquidSyms = SNAPSHOT_ASSETS.filter((a) => a.source === "hyperliquid")
     .map((a) => a.symbol)
     .join(",");
   const yahooSyms = SNAPSHOT_ASSETS.filter((a) => a.source === "yahoo")
     .map((a) => a.symbol)
     .join(",");
 
-  const [b, y] = await Promise.allSettled([
-    fetch(`/api/prices/binance?symbols=${binanceSyms}`).then((r) => r.json()),
+  const [hyperliquid, y] = await Promise.allSettled([
+    fetch(`/api/prices/hyperliquid?symbols=${hyperliquidSyms}`).then((r) => r.json()),
     fetch(`/api/prices/yahoo?symbols=${yahooSyms}`).then((r) => r.json()),
   ]);
 
   const results: PriceResult[] = [];
-  if (b.status === "fulfilled" && Array.isArray(b.value)) results.push(...b.value);
+  if (hyperliquid.status === "fulfilled" && Array.isArray(hyperliquid.value)) results.push(...hyperliquid.value);
   if (y.status === "fulfilled" && Array.isArray(y.value)) results.push(...y.value);
   return results;
 }

@@ -1,0 +1,8 @@
+R_DEF: Internal format may change without notice
+local
+color app_background
+color system_blue
+id loading_indicator
+id webview
+layout activity_main
+style Theme.MarketWatch

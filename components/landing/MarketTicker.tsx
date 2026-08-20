@@ -7,12 +7,12 @@ import { formatPrice, formatChangePercent } from "@/lib/utils";
 import type { TickerItem } from "@/types/market";
 
 const TICKER_SYMBOLS = [
-  { symbol: "BTCUSDT", source: "binance", name: "Bitcoin" },
-  { symbol: "ETHUSDT", source: "binance", name: "Ethereum" },
-  { symbol: "SOLUSDT", source: "binance", name: "Solana" },
-  { symbol: "BNBUSDT", source: "binance", name: "BNB" },
-  { symbol: "XRPUSDT", source: "binance", name: "XRP" },
-  { symbol: "DOGEUSDT", source: "binance", name: "Dogecoin" },
+  { symbol: "BTC", source: "hyperliquid", name: "Bitcoin" },
+  { symbol: "ETH", source: "hyperliquid", name: "Ethereum" },
+  { symbol: "SOL", source: "hyperliquid", name: "Solana" },
+  { symbol: "HYPE", source: "hyperliquid", name: "Hyperliquid" },
+  { symbol: "XRP", source: "hyperliquid", name: "XRP" },
+  { symbol: "DOGE", source: "hyperliquid", name: "Dogecoin" },
 ];
 
 const YAHOO_SYMBOLS = [
@@ -24,18 +24,18 @@ const YAHOO_SYMBOLS = [
 ];
 
 async function fetchTickerPrices(): Promise<TickerItem[]> {
-  const binanceSymbols = TICKER_SYMBOLS.map((s) => s.symbol).join(",");
+  const hyperliquidSymbols = TICKER_SYMBOLS.map((s) => s.symbol).join(",");
   const yahooSymbols = YAHOO_SYMBOLS.map((s) => s.symbol).join(",");
 
-  const [binanceRes, yahooRes] = await Promise.allSettled([
-    fetch(`/api/prices/binance?symbols=${binanceSymbols}`).then((r) => r.json()),
+  const [hyperliquidRes, yahooRes] = await Promise.allSettled([
+    fetch(`/api/prices/hyperliquid?symbols=${hyperliquidSymbols}`).then((r) => r.json()),
     fetch(`/api/prices/yahoo?symbols=${yahooSymbols}`).then((r) => r.json()),
   ]);
 
   const items: TickerItem[] = [];
 
-  if (binanceRes.status === "fulfilled" && Array.isArray(binanceRes.value)) {
-    for (const d of binanceRes.value) {
+  if (hyperliquidRes.status === "fulfilled" && Array.isArray(hyperliquidRes.value)) {
+    for (const d of hyperliquidRes.value) {
       const meta = TICKER_SYMBOLS.find((s) => s.symbol === d.symbol);
       if (meta) {
         items.push({
@@ -43,7 +43,7 @@ async function fetchTickerPrices(): Promise<TickerItem[]> {
           name: meta.name,
           price: d.price,
           changePercent: d.changePercent,
-          source: "binance",
+          source: "hyperliquid",
         });
       }
     }

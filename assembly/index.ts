@@ -146,3 +146,65 @@ export function percentChange(prices: Float64Array): f64 {
   if (first === 0.0) return 0.0;
   return ((prices[len - 1] - first) / first) * 100.0;
 }
+
+// ─── Daily Signal Primitives ─────────────────────────────
+// Scalar exports are intentionally used so the browser can call the hot parts
+// directly without transferring array pointers across the AssemblyScript ABI.
+export function kalmanGain(covariance: f64, processNoise: f64, measurementNoise: f64): f64 {
+  const predictedCovariance = covariance + processNoise;
+  return predictedCovariance / (predictedCovariance + measurementNoise);
+}
+
+export function kalmanEstimate(estimate: f64, observation: f64, gain: f64): f64 {
+  return estimate + gain * (observation - estimate);
+}
+
+export function kalmanCovariance(covariance: f64, gain: f64, processNoise: f64): f64 {
+  return (1.0 - gain) * (covariance + processNoise);
+}
+
+export function efficiencyRatio(netChange: f64, pathLength: f64): f64 {
+  if (pathLength <= 0.0) return 0.0;
+  return abs(netChange) / pathLength;
+}
+
+// Black-Scholes gamma per share. Inputs use annualized volatility and time in years.
+export function blackScholesGamma(spot: f64, strike: f64, time: f64, rate: f64, dividendYield: f64, volatility: f64): f64 {
+  if (spot <= 0.0 || strike <= 0.0 || time <= 0.0 || volatility <= 0.0) return 0.0;
+  const rootTime = Math.sqrt(time);
+  const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility * volatility) * time) / (volatility * rootTime);
+  const normalPdf = Math.exp(-0.5 * d1 * d1) / Math.sqrt(2.0 * Math.PI);
+  return Math.exp(-dividendYield * time) * normalPdf / (spot * volatility * rootTime);
+}
+
+function normalPdf(value: f64): f64 {
+  return Math.exp(-0.5 * value * value) / Math.sqrt(2.0 * Math.PI);
+}
+
+// Abramowitz-Stegun approximation, accurate enough for Greeks aggregation.
+function normalCdf(value: f64): f64 {
+  const sign: f64 = value < 0.0 ? -1.0 : 1.0;
+  const x = abs(value);
+  const t = 1.0 / (1.0 + 0.2316419 * x);
+  const polynomial = (((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t - 0.356563782) * t + 0.319381530) * t);
+  const approximation = 1.0 - normalPdf(x) * polynomial;
+  return sign > 0.0 ? approximation : 1.0 - approximation;
+}
+
+export function blackScholesVanna(spot: f64, strike: f64, time: f64, rate: f64, dividendYield: f64, volatility: f64): f64 {
+  if (spot <= 0.0 || strike <= 0.0 || time <= 0.0 || volatility <= 0.0) return 0.0;
+  const rootTime = Math.sqrt(time);
+  const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility * volatility) * time) / (volatility * rootTime);
+  const d2 = d1 - volatility * rootTime;
+  return -Math.exp(-dividendYield * time) * normalPdf(d1) * d2 / volatility;
+}
+
+export function blackScholesCharm(spot: f64, strike: f64, time: f64, rate: f64, dividendYield: f64, volatility: f64, isCall: f64): f64 {
+  if (spot <= 0.0 || strike <= 0.0 || time <= 0.0 || volatility <= 0.0) return 0.0;
+  const rootTime = Math.sqrt(time);
+  const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility * volatility) * time) / (volatility * rootTime);
+  const d2 = d1 - volatility * rootTime;
+  const discount = Math.exp(-dividendYield * time);
+  const decay = discount * normalPdf(d1) * (2.0 * (rate - dividendYield) * time - d2 * volatility * rootTime) / (2.0 * time * volatility * rootTime);
+  return isCall > 0.5 ? dividendYield * discount * normalCdf(d1) - decay : -dividendYield * discount * normalCdf(-d1) - decay;
+}

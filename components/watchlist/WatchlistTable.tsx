@@ -74,6 +74,9 @@ function getExternalUrl(symbol: string, source: string): string {
       ? `https://www.okx.com/trade-swap/${upper.toLowerCase()}`
       : `https://www.okx.com/trade-spot/${upper.toLowerCase()}`;
   }
+  if (source === "hyperliquid") {
+    return `https://app.hyperliquid.xyz/trade/${encodeURIComponent(upper)}`;
+  }
   return `https://finance.yahoo.com/quote/${encodeURIComponent(upper)}`;
 }
 

@@ -1,0 +1,6 @@
+com.marketwatch.app:id/webview = 0x7f020001
+com.marketwatch.app:id/loading_indicator = 0x7f020000
+com.marketwatch.app:style/Theme.MarketWatch = 0x7f040000
+com.marketwatch.app:color/system_blue = 0x7f010001
+com.marketwatch.app:layout/activity_main = 0x7f030000
+com.marketwatch.app:color/app_background = 0x7f010000

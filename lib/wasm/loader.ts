@@ -9,6 +9,13 @@ export interface MarketEngineWasm {
   calculateRSI: (prices: Float64Array, period: number) => Float64Array;
   normalizePrices: (prices: Float64Array) => Float64Array;
   percentChange: (prices: Float64Array) => number;
+  kalmanGain: (covariance: number, processNoise: number, measurementNoise: number) => number;
+  kalmanEstimate: (estimate: number, observation: number, gain: number) => number;
+  kalmanCovariance: (covariance: number, gain: number, processNoise: number) => number;
+  efficiencyRatio: (netChange: number, pathLength: number) => number;
+  blackScholesGamma: (spot: number, strike: number, time: number, rate: number, dividendYield: number, volatility: number) => number;
+  blackScholesVanna: (spot: number, strike: number, time: number, rate: number, dividendYield: number, volatility: number) => number;
+  blackScholesCharm: (spot: number, strike: number, time: number, rate: number, dividendYield: number, volatility: number, isCall: number) => number;
 }
 
 // Pure JS fallback — identical API surface as WASM exports
@@ -65,6 +72,37 @@ const JS_FALLBACK: MarketEngineWasm = {
     if (prices.length < 2 || prices[0] === 0) return 0;
     return ((prices[prices.length - 1] - prices[0]) / prices[0]) * 100;
   },
+  kalmanGain: (covariance, processNoise, measurementNoise) => {
+    const predictedCovariance = covariance + processNoise;
+    return predictedCovariance / (predictedCovariance + measurementNoise);
+  },
+  kalmanEstimate: (estimate, observation, gain) => estimate + gain * (observation - estimate),
+  kalmanCovariance: (covariance, gain, processNoise) => (1 - gain) * (covariance + processNoise),
+  efficiencyRatio: (netChange, pathLength) => pathLength <= 0 ? 0 : Math.abs(netChange) / pathLength,
+  blackScholesGamma: (spot, strike, time, rate, dividendYield, volatility) => {
+    if (spot <= 0 || strike <= 0 || time <= 0 || volatility <= 0) return 0;
+    const rootTime = Math.sqrt(time);
+    const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility ** 2) * time) / (volatility * rootTime);
+    return Math.exp(-dividendYield * time) * Math.exp(-0.5 * d1 ** 2) / Math.sqrt(2 * Math.PI) / (spot * volatility * rootTime);
+  },
+  blackScholesVanna: (spot, strike, time, rate, dividendYield, volatility) => {
+    if (spot <= 0 || strike <= 0 || time <= 0 || volatility <= 0) return 0;
+    const rootTime = Math.sqrt(time);
+    const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility ** 2) * time) / (volatility * rootTime);
+    const d2 = d1 - volatility * rootTime;
+    return -Math.exp(-dividendYield * time) * Math.exp(-0.5 * d1 ** 2) / Math.sqrt(2 * Math.PI) * d2 / volatility;
+  },
+  blackScholesCharm: (spot, strike, time, rate, dividendYield, volatility, isCall) => {
+    if (spot <= 0 || strike <= 0 || time <= 0 || volatility <= 0) return 0;
+    const rootTime = Math.sqrt(time);
+    const d1 = (Math.log(spot / strike) + (rate - dividendYield + 0.5 * volatility ** 2) * time) / (volatility * rootTime);
+    const d2 = d1 - volatility * rootTime;
+    const pdf = Math.exp(-0.5 * d1 ** 2) / Math.sqrt(2 * Math.PI);
+    const cdf = (value: number) => { const sign = value < 0 ? -1 : 1; const x = Math.abs(value); const t = 1 / (1 + 0.2316419 * x); const p = (((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t - 0.356563782) * t + 0.319381530) * t); const approx = 1 - Math.exp(-0.5 * x ** 2) / Math.sqrt(2 * Math.PI) * p; return sign > 0 ? approx : 1 - approx; };
+    const discount = Math.exp(-dividendYield * time);
+    const decay = discount * pdf * (2 * (rate - dividendYield) * time - d2 * volatility * rootTime) / (2 * time * volatility * rootTime);
+    return isCall > 0.5 ? dividendYield * discount * cdf(d1) - decay : -dividendYield * discount * cdf(-d1) - decay;
+  },
 };
 
 let wasmInstance: MarketEngineWasm | null = null;
@@ -103,6 +141,13 @@ export async function loadMarketEngine(): Promise<MarketEngineWasm> {
         calculateRSI: exports.calculateRSI as MarketEngineWasm["calculateRSI"],
         normalizePrices: exports.normalizePrices as MarketEngineWasm["normalizePrices"],
         percentChange: exports.percentChange as MarketEngineWasm["percentChange"],
+        kalmanGain: exports.kalmanGain as MarketEngineWasm["kalmanGain"],
+        kalmanEstimate: exports.kalmanEstimate as MarketEngineWasm["kalmanEstimate"],
+        kalmanCovariance: exports.kalmanCovariance as MarketEngineWasm["kalmanCovariance"],
+        efficiencyRatio: exports.efficiencyRatio as MarketEngineWasm["efficiencyRatio"],
+        blackScholesGamma: exports.blackScholesGamma as MarketEngineWasm["blackScholesGamma"],
+        blackScholesVanna: exports.blackScholesVanna as MarketEngineWasm["blackScholesVanna"],
+        blackScholesCharm: exports.blackScholesCharm as MarketEngineWasm["blackScholesCharm"],
       };
 
       console.log("[WASM] Market engine loaded successfully");

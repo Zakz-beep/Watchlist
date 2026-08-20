@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "MarketWatch — Real-Time Multi-Source Watchlist",
   description:
     "Track stocks, crypto, forex, and indices in real-time from Yahoo Finance, Binance, OKX and more. Powered by WebAssembly for blazing-fast performance.",
-  keywords: ["stock watchlist", "crypto watchlist", "binance", "yahoo finance", "okx", "market tracker"],
+  keywords: ["stock watchlist", "crypto perpetual watchlist", "hyperliquid", "yahoo finance", "market tracker"],
   openGraph: {
     title: "MarketWatch",
     description: "Track Every Market, All in One Place",

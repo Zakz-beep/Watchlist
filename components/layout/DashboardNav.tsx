@@ -2,6 +2,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { Sun, Moon, Bell, RefreshCw, Search, X, Loader2, Plus, Check } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TickerLogo } from "@/components/ui/TickerLogo";
 import { getAssetTypeColor } from "@/lib/ticker-logo";
 import { useWatchlist } from "@/lib/hooks/useWatchlist";
+import { useUser } from "@/lib/hooks/useUser";
+import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 import type { SearchResult } from "@/types/market";
 import { cn } from "@/lib/utils";
 
@@ -16,8 +19,10 @@ export function DashboardNav() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const queryClient = useQueryClient();
   const { items, addItem } = useWatchlist();
+  const { user, profile, updateProfile } = useUser();
 
   // Autocomplete state
   const [query, setQuery] = useState("");
@@ -28,7 +33,8 @@ export function DashboardNav() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    const frame = window.requestAnimationFrame(() => setMounted(true));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   // Close dropdown on outside click
@@ -92,11 +98,12 @@ export function DashboardNav() {
   const existingSymbols = items.map((i) => i.symbol);
 
   return (
-    <header className="h-14 flex items-center justify-between px-6 border-b border-border/40 glass shrink-0 relative z-50">
-      <div className="flex items-center gap-6">
+    <header className="flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-3 glass shrink-0 sticky top-0 z-50 md:h-16 md:flex-nowrap md:px-6 md:py-0">
+      <div className="flex items-center gap-3">
         <div>
-          <h1 className="text-sm font-semibold">Dashboard</h1>
-          <p className="text-xs text-muted-foreground hidden sm:block">
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">MarketWatch</p>
+          <h1 className="text-base font-bold tracking-tight">Dashboard</h1>
+          <p className="text-xs text-muted-foreground hidden lg:block">
             {mounted
               ? new Date().toLocaleDateString("en-US", {
                   weekday: "short",
@@ -109,7 +116,7 @@ export function DashboardNav() {
       </div>
 
       {/* ── Global Autocomplete Search Bar ── */}
-      <div className="relative flex-1 max-w-md mx-4" ref={dropdownRef}>
+      <div className="relative order-3 basis-full sm:order-none sm:mx-2 sm:flex-1 sm:basis-auto sm:max-w-md md:mx-4" ref={dropdownRef}>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -118,7 +125,7 @@ export function DashboardNav() {
             onChange={(e) => handleQueryChange(e.target.value)}
             onFocus={() => query.trim() && setOpenDropdown(true)}
             placeholder="Quick search symbol or company... (e.g. AAPL, BTC, NVDA)"
-            className="w-full pl-9 pr-8 py-1.5 bg-muted/30 border border-border/40 rounded-xl text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+            className="w-full rounded-2xl border border-border/60 bg-muted/55 py-2 pl-9 pr-8 text-xs placeholder:text-muted-foreground/60 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
           {loading ? (
             <Loader2 className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground animate-spin" />
@@ -219,32 +226,67 @@ export function DashboardNav() {
       </div>
 
       {/* ── Nav Actions ── */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Refresh */}
         <button
           onClick={handleRefresh}
-          className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+          className="rounded-full p-2 hover:bg-muted/70 transition-colors text-muted-foreground hover:text-foreground"
           title="Refresh prices"
         >
           <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
         </button>
 
         {/* Notifications */}
-        <button className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground relative">
+        <Link href="/dashboard/alerts" className="relative rounded-full p-2 hover:bg-muted/70 transition-colors text-muted-foreground hover:text-foreground" title="Price alerts">
           <Bell className="w-4 h-4" />
           <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full" />
-        </button>
+        </Link>
 
         {/* Theme toggle */}
         {mounted && (
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+            className="rounded-full p-2 hover:bg-muted/70 transition-colors text-muted-foreground hover:text-foreground"
           >
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         )}
+
+        {/* Profile Avatar Button */}
+        <button
+          onClick={() => setProfileOpen(true)}
+          className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-border/60 hover:bg-muted/60 transition-all text-xs font-semibold"
+          title="Edit profile & socials"
+        >
+          <div className="w-7 h-7 rounded-full border border-primary/40 bg-muted/60 overflow-hidden flex items-center justify-center shrink-0">
+            {profile.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={profile.avatarUrl}
+                alt={profile.fullName || "User Avatar"}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-[10px] font-bold text-primary uppercase">
+                {profile.fullName ? profile.fullName.slice(0, 2) : "MW"}
+              </span>
+            )}
+          </div>
+          <span className="hidden xl:inline-block max-w-[100px] truncate text-foreground">
+            {profile.fullName || "Profile"}
+          </span>
+        </button>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        profile={profile}
+        onSave={updateProfile}
+        isGuest={!user}
+      />
     </header>
   );
 }
+

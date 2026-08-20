@@ -1,7 +1,7 @@
 // types/market.ts
 
-export type AssetSource = "yahoo" | "binance" | "okx";
-export type AssetType = "stock" | "crypto" | "forex" | "index" | "etf";
+export type AssetSource = "yahoo" | "binance" | "okx" | "bingx" | "hyperliquid";
+export type AssetType = "stock" | "crypto" | "forex" | "index" | "etf" | "commodity";
 
 export interface Asset {
   symbol: string;
@@ -42,6 +42,17 @@ export interface Watchlist {
   items: WatchlistItem[];
 }
 
+export interface PriceAlert {
+  id: string;
+  userId: string;
+  symbol: string;
+  source: AssetSource;
+  condition: "above" | "below";
+  targetPrice: number;
+  triggered: boolean;
+  createdAt: string;
+}
+
 // Ticker bar item (landing page)
 export interface TickerItem {
   symbol: string;
@@ -68,3 +79,22 @@ export interface IndicatorResult {
   rsi14?: number[];
   normalized?: number[];
 }
+
+export interface SocialLinks {
+  twitter?: string;
+  github?: string;
+  telegram?: string;
+  linkedin?: string;
+  website?: string;
+  youtube?: string;
+  discord?: string;
+}
+
+export interface UserProfile {
+  fullName?: string;
+  username?: string;
+  avatarUrl?: string;
+  bio?: string;
+  socials?: SocialLinks;
+}
+

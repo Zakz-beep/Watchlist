@@ -4,12 +4,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { BarChart3, Mail, Lock, Loader2, UserPlus, AlertCircle, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { getAuthRedirectUrl } from "@/lib/auth-url";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const supabase = createClient();
 
   const [email, setEmail] = useState("");
@@ -34,7 +33,11 @@ export default function RegisterPage() {
 
     setLoading(true);
     setError("");
-    const { error: err } = await supabase.auth.signUp({ email, password });
+    const { error: err } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: getAuthRedirectUrl() },
+    });
     if (err) {
       setError(err.message);
       setLoading(false);
@@ -54,7 +57,7 @@ export default function RegisterPage() {
       return;
     }
 
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = getAuthRedirectUrl();
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider,
       options: {

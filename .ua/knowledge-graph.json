@@ -1,0 +1,1383 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "MarketWatch \u2014 Multi-Source Market Watchlist",
+    "languages": [
+      "TypeScript",
+      "JavaScript",
+      "AssemblyScript",
+      "CSS",
+      "SQL",
+      "Java",
+      "Markdown"
+    ],
+    "frameworks": [
+      "Next.js 16",
+      "React 19",
+      "Tailwind CSS v4",
+      "TanStack Query",
+      "Supabase",
+      "Lightweight Charts"
+    ],
+    "description": "Comprehensive real-time financial market analytics platform aggregating stocks, perpetuals, crypto, forex, and indices across Hyperliquid, Yahoo Finance, Binance, OKX, and BingX with WebAssembly acceleration and native Android WebView integration.",
+    "analyzedAt": "2026-08-20T13:44:09.989564+00:00",
+    "gitCommitHash": "HEAD"
+  },
+  "nodes": [
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Project introduction and standard Next.js getting started documentation.",
+      "tags": [
+        "docs",
+        "readme",
+        "getting-started"
+      ]
+    },
+    {
+      "id": "document:CONTEXT.md",
+      "type": "document",
+      "name": "CONTEXT.md",
+      "filePath": "CONTEXT.md",
+      "summary": "Comprehensive architecture, design decisions, data flow, WASM engine specifications, and API provider details.",
+      "tags": [
+        "docs",
+        "architecture",
+        "context"
+      ]
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "filePath": "AGENTS.md",
+      "summary": "Developer rules, code conventions, styling standards, WASM guidelines, and best practices for AI agents.",
+      "tags": [
+        "docs",
+        "guidelines",
+        "agents"
+      ]
+    },
+    {
+      "id": "document:android-webview/README.md",
+      "type": "document",
+      "name": "android-webview/README.md",
+      "filePath": "android-webview/README.md",
+      "summary": "Instructions for compiling and running the native Android WebView wrapper with deep links and notification bridges.",
+      "tags": [
+        "docs",
+        "android",
+        "webview"
+      ]
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "NPM package dependencies (Next.js 16, React 19, Tailwind v4, TanStack Query, AssemblyScript, lightweight-charts, Supabase).",
+      "tags": [
+        "config",
+        "dependencies",
+        "npm"
+      ]
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration with path aliases (@/*).",
+      "tags": [
+        "config",
+        "typescript"
+      ]
+    },
+    {
+      "id": "config:next.config.ts",
+      "type": "config",
+      "name": "next.config.ts",
+      "filePath": "next.config.ts",
+      "summary": "Next.js configuration including server and security headers.",
+      "tags": [
+        "config",
+        "nextjs"
+      ]
+    },
+    {
+      "id": "config:app/globals.css",
+      "type": "config",
+      "name": "app/globals.css",
+      "filePath": "app/globals.css",
+      "summary": "Tailwind CSS v4 theme variables, glassmorphism utilities, gradient mesh backgrounds, and glow effects.",
+      "tags": [
+        "config",
+        "css",
+        "styling"
+      ]
+    },
+    {
+      "id": "file:app/layout.tsx",
+      "type": "file",
+      "name": "app/layout.tsx",
+      "filePath": "app/layout.tsx",
+      "summary": "Root HTML layout configuring Geist fonts, ThemeProvider (dark/light), and TanStack QueryProvider.",
+      "tags": [
+        "layout",
+        "root",
+        "providers"
+      ]
+    },
+    {
+      "id": "file:app/page.tsx",
+      "type": "file",
+      "name": "app/page.tsx",
+      "filePath": "app/page.tsx",
+      "summary": "Public landing page / Welcome Dashboard featuring live price ticker, hero CTA, feature highlights, and market snapshot.",
+      "tags": [
+        "page",
+        "landing",
+        "welcome"
+      ]
+    },
+    {
+      "id": "file:proxy.ts",
+      "type": "file",
+      "name": "proxy.ts",
+      "filePath": "proxy.ts",
+      "summary": "Next.js 16 edge proxy / middleware managing Supabase SSR auth cookies and route protection for /dashboard and /auth.",
+      "tags": [
+        "middleware",
+        "auth",
+        "routing",
+        "security"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/layout.tsx",
+      "type": "file",
+      "name": "app/dashboard/layout.tsx",
+      "filePath": "app/dashboard/layout.tsx",
+      "summary": "Dashboard layout wrapping all protected / subpages with Sidebar, DashboardNav, and MobileTabBar.",
+      "tags": [
+        "dashboard",
+        "layout",
+        "navigation"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/page.tsx",
+      "filePath": "app/dashboard/page.tsx",
+      "summary": "Main dashboard overview page displaying summary statistics, multi-asset WatchlistTable, MarketSentiment, TopMovers, and RecentNews.",
+      "tags": [
+        "dashboard",
+        "overview",
+        "watchlist"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/watchlist/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/watchlist/page.tsx",
+      "filePath": "app/dashboard/watchlist/page.tsx",
+      "summary": "Dedicated watchlist manager page supporting custom watchlist groups, table/grid views, asset filters, and quick actions.",
+      "tags": [
+        "dashboard",
+        "watchlist",
+        "management"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/charts/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/charts/page.tsx",
+      "filePath": "app/dashboard/charts/page.tsx",
+      "summary": "Full charting workspace combining TradingView/Lightweight candlestick charts, drawing tools, L2 Order Book, and Order Flow tape.",
+      "tags": [
+        "dashboard",
+        "charts",
+        "trading"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/signals/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/signals/page.tsx",
+      "filePath": "app/dashboard/signals/page.tsx",
+      "summary": "Quantitative multi-timeframe trading signals powered by Kalman filters, efficiency ratios, momentum impulses, CVD, and RSI.",
+      "tags": [
+        "dashboard",
+        "signals",
+        "quant",
+        "kalman"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/options/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/options/page.tsx",
+      "filePath": "app/dashboard/options/page.tsx",
+      "summary": "Options Gamma Exposure (GEX) analytics page computing Call/Put walls, Max Pain, Gamma Flip points, Vanna, and Charm.",
+      "tags": [
+        "dashboard",
+        "options",
+        "gex",
+        "greeks"
+      ]
+    },
+    {
+      "id": "file:app/dashboard/alerts/page.tsx",
+      "type": "file",
+      "name": "app/dashboard/alerts/page.tsx",
+      "filePath": "app/dashboard/alerts/page.tsx",
+      "summary": "Price alert configuration page with Supabase persistence and native Android notification bridge integration.",
+      "tags": [
+        "dashboard",
+        "alerts",
+        "notifications"
+      ]
+    },
+    {
+      "id": "file:app/auth/login/page.tsx",
+      "type": "file",
+      "name": "app/auth/login/page.tsx",
+      "filePath": "app/auth/login/page.tsx",
+      "summary": "User login interface supporting Supabase email/password and Google OAuth.",
+      "tags": [
+        "auth",
+        "login"
+      ]
+    },
+    {
+      "id": "file:app/auth/register/page.tsx",
+      "type": "file",
+      "name": "app/auth/register/page.tsx",
+      "filePath": "app/auth/register/page.tsx",
+      "summary": "User registration interface with Supabase auth integration.",
+      "tags": [
+        "auth",
+        "register"
+      ]
+    },
+    {
+      "id": "endpoint:app/auth/callback/route.ts",
+      "type": "endpoint",
+      "name": "app/auth/callback/route.ts",
+      "filePath": "app/auth/callback/route.ts",
+      "summary": "OAuth code exchange endpoint setting SSR session cookies and redirecting to the dashboard.",
+      "tags": [
+        "auth",
+        "oauth",
+        "callback"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/hyperliquid/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/hyperliquid",
+      "filePath": "app/api/prices/hyperliquid/route.ts",
+      "summary": "Proxies live perpetual prices, volume, and 24h changes from Hyperliquid API (including builder DEX markets like xyz:TSLA).",
+      "tags": [
+        "api",
+        "prices",
+        "hyperliquid",
+        "crypto"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/hyperliquid/candles/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/hyperliquid/candles",
+      "filePath": "app/api/prices/hyperliquid/candles/route.ts",
+      "summary": "Fetches historical OHLCV candle snapshots from Hyperliquid for charting.",
+      "tags": [
+        "api",
+        "candles",
+        "hyperliquid",
+        "charting"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/hyperliquid/daily-signals/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/hyperliquid/daily-signals",
+      "filePath": "app/api/prices/hyperliquid/daily-signals/route.ts",
+      "summary": "Retrieves multi-timeframe candles (4h, 1h, 15m) across major perpetual pairs for quantitative signal processing.",
+      "tags": [
+        "api",
+        "signals",
+        "hyperliquid",
+        "quant"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/hyperliquid/orderflow/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/hyperliquid/orderflow",
+      "filePath": "app/api/prices/hyperliquid/orderflow/route.ts",
+      "summary": "Fetches recent aggressor trades and L2 book depth from Hyperliquid for order flow analysis.",
+      "tags": [
+        "api",
+        "orderflow",
+        "hyperliquid",
+        "orderbook"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/hyperliquid/orderbook/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/hyperliquid/orderbook",
+      "filePath": "app/api/prices/hyperliquid/orderbook/route.ts",
+      "summary": "Retrieves real-time L2 order book bids and asks from Hyperliquid.",
+      "tags": [
+        "api",
+        "orderbook",
+        "hyperliquid"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/yahoo/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/yahoo",
+      "filePath": "app/api/prices/yahoo/route.ts",
+      "summary": "Server-side price proxy for stocks, ETFs, forex, and indices using yahoo-finance2.",
+      "tags": [
+        "api",
+        "prices",
+        "yahoo",
+        "stocks",
+        "forex"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/binance/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/binance",
+      "filePath": "app/api/prices/binance/route.ts",
+      "summary": "Proxies 24hr ticker price data from Binance REST API.",
+      "tags": [
+        "api",
+        "prices",
+        "binance",
+        "crypto"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/okx/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/okx",
+      "filePath": "app/api/prices/okx/route.ts",
+      "summary": "Proxies public spot market tickers from OKX REST API.",
+      "tags": [
+        "api",
+        "prices",
+        "okx",
+        "crypto"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/prices/bingx/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/prices/bingx",
+      "filePath": "app/api/prices/bingx/route.ts",
+      "summary": "Proxies contract and perpetual ticker data from BingX swap API.",
+      "tags": [
+        "api",
+        "prices",
+        "bingx",
+        "crypto"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/options/gex/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/options/gex",
+      "filePath": "app/api/options/gex/route.ts",
+      "summary": "Fetches option chains across strike prices and expiration dates via Yahoo Finance for GEX calculations.",
+      "tags": [
+        "api",
+        "options",
+        "gex",
+        "greeks"
+      ]
+    },
+    {
+      "id": "endpoint:app/api/search/route.ts",
+      "type": "endpoint",
+      "name": "GET /api/search",
+      "filePath": "app/api/search/route.ts",
+      "summary": "Unified symbol search query endpoint spanning Yahoo, Hyperliquid, Binance, and OKX catalogs.",
+      "tags": [
+        "api",
+        "search",
+        "symbols"
+      ]
+    },
+    {
+      "id": "file:assembly/index.ts",
+      "type": "file",
+      "name": "assembly/index.ts",
+      "filePath": "assembly/index.ts",
+      "summary": "AssemblyScript WebAssembly module source containing ultra-fast quantitative math: sorting, SMA, RSI, price normalization, Kalman filters, and Black-Scholes Greeks (Gamma, Vanna, Charm).",
+      "tags": [
+        "wasm",
+        "assemblyscript",
+        "quant",
+        "algorithms"
+      ]
+    },
+    {
+      "id": "file:lib/wasm/loader.ts",
+      "type": "file",
+      "name": "lib/wasm/loader.ts",
+      "filePath": "lib/wasm/loader.ts",
+      "summary": "Lazy browser WASM loader providing asynchronous initialization and a full TypeScript/JavaScript fallback engine.",
+      "tags": [
+        "wasm",
+        "loader",
+        "fallback"
+      ]
+    },
+    {
+      "id": "file:lib/hooks/useWatchlist.ts",
+      "type": "file",
+      "name": "lib/hooks/useWatchlist.ts",
+      "filePath": "lib/hooks/useWatchlist.ts",
+      "summary": "Core state hook managing watchlist groups, asset addition/removal, optimistic UI updates, localStorage guest mode, and Supabase cloud persistence.",
+      "tags": [
+        "hooks",
+        "state",
+        "watchlist",
+        "supabase"
+      ]
+    },
+    {
+      "id": "file:lib/hooks/useUser.ts",
+      "type": "file",
+      "name": "lib/hooks/useUser.ts",
+      "filePath": "lib/hooks/useUser.ts",
+      "summary": "React hook for accessing authenticated Supabase user profile and session state.",
+      "tags": [
+        "hooks",
+        "auth",
+        "user"
+      ]
+    },
+    {
+      "id": "file:components/layout/Navbar.tsx",
+      "type": "file",
+      "name": "components/layout/Navbar.tsx",
+      "filePath": "components/layout/Navbar.tsx",
+      "summary": "Top navigation bar for the public landing page with theme toggle and login/dashboard action buttons.",
+      "tags": [
+        "components",
+        "layout",
+        "navbar"
+      ]
+    },
+    {
+      "id": "file:components/layout/Sidebar.tsx",
+      "type": "file",
+      "name": "components/layout/Sidebar.tsx",
+      "filePath": "components/layout/Sidebar.tsx",
+      "summary": "Collapsible desktop navigation sidebar with links to Watchlist, Charts, Signals, Options, and Alerts.",
+      "tags": [
+        "components",
+        "layout",
+        "sidebar"
+      ]
+    },
+    {
+      "id": "file:components/layout/DashboardNav.tsx",
+      "type": "file",
+      "name": "components/layout/DashboardNav.tsx",
+      "filePath": "components/layout/DashboardNav.tsx",
+      "summary": "Dashboard top toolbar with watchlist selector dropdown, new group creation, live market time, refresh, and user profile.",
+      "tags": [
+        "components",
+        "layout",
+        "dashboard"
+      ]
+    },
+    {
+      "id": "file:components/layout/MobileTabBar.tsx",
+      "type": "file",
+      "name": "components/layout/MobileTabBar.tsx",
+      "filePath": "components/layout/MobileTabBar.tsx",
+      "summary": "Fixed bottom navigation bar for mobile and Android WebView users.",
+      "tags": [
+        "components",
+        "layout",
+        "mobile"
+      ]
+    },
+    {
+      "id": "file:components/landing/HeroSection.tsx",
+      "type": "file",
+      "name": "components/landing/HeroSection.tsx",
+      "filePath": "components/landing/HeroSection.tsx",
+      "summary": "Landing hero section with animated headline, badge highlights, call-to-action buttons, and platform stats.",
+      "tags": [
+        "components",
+        "landing",
+        "hero"
+      ]
+    },
+    {
+      "id": "file:components/landing/MarketTicker.tsx",
+      "type": "file",
+      "name": "components/landing/MarketTicker.tsx",
+      "filePath": "components/landing/MarketTicker.tsx",
+      "summary": "Infinite horizontal marquee ticker showing real-time price updates for top crypto, stocks, and indices.",
+      "tags": [
+        "components",
+        "landing",
+        "ticker"
+      ]
+    },
+    {
+      "id": "file:components/landing/MarketSnapshot.tsx",
+      "type": "file",
+      "name": "components/landing/MarketSnapshot.tsx",
+      "filePath": "components/landing/MarketSnapshot.tsx",
+      "summary": "Interactive 6-card live price grid on the landing page (BTC, ETH, AAPL, NVDA, S&P 500, Gold).",
+      "tags": [
+        "components",
+        "landing",
+        "snapshot"
+      ]
+    },
+    {
+      "id": "file:components/landing/FeatureCards.tsx",
+      "type": "file",
+      "name": "components/landing/FeatureCards.tsx",
+      "filePath": "components/landing/FeatureCards.tsx",
+      "summary": "Feature breakdown grid showcasing WASM engine speed, multi-source aggregation, dark mode, and security.",
+      "tags": [
+        "components",
+        "landing",
+        "features"
+      ]
+    },
+    {
+      "id": "file:components/landing/FooterCTA.tsx",
+      "type": "file",
+      "name": "components/landing/FooterCTA.tsx",
+      "filePath": "components/landing/FooterCTA.tsx",
+      "summary": "Bottom call-to-action footer offering guest access and registration links.",
+      "tags": [
+        "components",
+        "landing",
+        "footer"
+      ]
+    },
+    {
+      "id": "file:components/watchlist/WatchlistTable.tsx",
+      "type": "file",
+      "name": "components/watchlist/WatchlistTable.tsx",
+      "filePath": "components/watchlist/WatchlistTable.tsx",
+      "summary": "Core interactive watchlist table featuring WASM-powered column sorting, sparkline mini-charts, badge sources, and row deletion.",
+      "tags": [
+        "components",
+        "watchlist",
+        "table"
+      ]
+    },
+    {
+      "id": "file:components/watchlist/AddSymbolDialog.tsx",
+      "type": "file",
+      "name": "components/watchlist/AddSymbolDialog.tsx",
+      "filePath": "components/watchlist/AddSymbolDialog.tsx",
+      "summary": "Modal dialog for searching and adding symbols across Yahoo, Hyperliquid, Binance, and OKX with debounce and quick tags.",
+      "tags": [
+        "components",
+        "watchlist",
+        "search",
+        "dialog"
+      ]
+    },
+    {
+      "id": "file:components/watchlist/SparklineChart.tsx",
+      "type": "file",
+      "name": "components/watchlist/SparklineChart.tsx",
+      "filePath": "components/watchlist/SparklineChart.tsx",
+      "summary": "Lightweight SVG sparkline chart component for rendering 24-hour price trend lines.",
+      "tags": [
+        "components",
+        "watchlist",
+        "chart",
+        "svg"
+      ]
+    },
+    {
+      "id": "file:components/ui/TickerLogo.tsx",
+      "type": "file",
+      "name": "components/ui/TickerLogo.tsx",
+      "filePath": "components/ui/TickerLogo.tsx",
+      "summary": "Intelligent ticker avatar component loading logos from CoinGecko, Clearbit, or styled letter fallbacks.",
+      "tags": [
+        "components",
+        "ui",
+        "logo",
+        "avatar"
+      ]
+    },
+    {
+      "id": "file:components/dashboard/MarketSentiment.tsx",
+      "type": "file",
+      "name": "components/dashboard/MarketSentiment.tsx",
+      "filePath": "components/dashboard/MarketSentiment.tsx",
+      "summary": "Sentiment meter calculating Bullish/Bearish percentage distribution and fear/greed indicator from active watchlist.",
+      "tags": [
+        "components",
+        "dashboard",
+        "sentiment"
+      ]
+    },
+    {
+      "id": "file:components/dashboard/TopMovers.tsx",
+      "type": "file",
+      "name": "components/dashboard/TopMovers.tsx",
+      "filePath": "components/dashboard/TopMovers.tsx",
+      "summary": "Ranked list of top percentage gainers and losers in the current session.",
+      "tags": [
+        "components",
+        "dashboard",
+        "movers"
+      ]
+    },
+    {
+      "id": "file:components/dashboard/RecentNews.tsx",
+      "type": "file",
+      "name": "components/dashboard/RecentNews.tsx",
+      "filePath": "components/dashboard/RecentNews.tsx",
+      "summary": "Curated financial news headlines and macro updates feed.",
+      "tags": [
+        "components",
+        "dashboard",
+        "news"
+      ]
+    },
+    {
+      "id": "file:components/charts/HyperliquidChart.tsx",
+      "type": "file",
+      "name": "components/charts/HyperliquidChart.tsx",
+      "filePath": "components/charts/HyperliquidChart.tsx",
+      "summary": "Interactive candlestick chart powered by TradingView Lightweight Charts with interactive trend and horizontal drawing tools.",
+      "tags": [
+        "components",
+        "charts",
+        "candlestick",
+        "drawing"
+      ]
+    },
+    {
+      "id": "file:components/charts/HyperliquidOrderBook.tsx",
+      "type": "file",
+      "name": "components/charts/HyperliquidOrderBook.tsx",
+      "filePath": "components/charts/HyperliquidOrderBook.tsx",
+      "summary": "Live L2 order book depth visualization with dynamic cumulative depth bars.",
+      "tags": [
+        "components",
+        "charts",
+        "orderbook",
+        "depth"
+      ]
+    },
+    {
+      "id": "file:components/charts/HyperliquidOrderFlow.tsx",
+      "type": "file",
+      "name": "components/charts/HyperliquidOrderFlow.tsx",
+      "filePath": "components/charts/HyperliquidOrderFlow.tsx",
+      "summary": "Advanced order flow analytics detecting trade aggressors, bid/ask liquidity walls, and volume absorption signals.",
+      "tags": [
+        "components",
+        "charts",
+        "orderflow",
+        "tape"
+      ]
+    },
+    {
+      "id": "file:components/charts/HyperliquidMarketSearch.tsx",
+      "type": "file",
+      "name": "components/charts/HyperliquidMarketSearch.tsx",
+      "filePath": "components/charts/HyperliquidMarketSearch.tsx",
+      "summary": "Autocompleting market search dropdown for perpetual contracts and builder DEX tokens.",
+      "tags": [
+        "components",
+        "charts",
+        "search"
+      ]
+    },
+    {
+      "id": "file:lib/utils.ts",
+      "type": "file",
+      "name": "lib/utils.ts",
+      "filePath": "lib/utils.ts",
+      "summary": "Formatting helpers for currency, percentages, numbers, and Tailwind class merging (cn).",
+      "tags": [
+        "lib",
+        "utils",
+        "formatters"
+      ]
+    },
+    {
+      "id": "file:lib/ticker-logo.ts",
+      "type": "file",
+      "name": "lib/ticker-logo.ts",
+      "filePath": "lib/ticker-logo.ts",
+      "summary": "CoinGecko ID mappings, Clearbit logo lookups, and asset source badge color definitions.",
+      "tags": [
+        "lib",
+        "logos",
+        "crypto",
+        "stocks"
+      ]
+    },
+    {
+      "id": "file:lib/hyperliquid-catalog.ts",
+      "type": "file",
+      "name": "lib/hyperliquid-catalog.ts",
+      "filePath": "lib/hyperliquid-catalog.ts",
+      "summary": "Hyperliquid universe parser categorizing crypto, tokenized stocks, commodities, and index perpetuals.",
+      "tags": [
+        "lib",
+        "hyperliquid",
+        "catalog"
+      ]
+    },
+    {
+      "id": "file:lib/hyperliquid-market.ts",
+      "type": "file",
+      "name": "lib/hyperliquid-market.ts",
+      "filePath": "lib/hyperliquid-market.ts",
+      "summary": "Market symbol normalizer parsing builder DEX prefixes (e.g., xyz:TSLA).",
+      "tags": [
+        "lib",
+        "hyperliquid",
+        "normalizer"
+      ]
+    },
+    {
+      "id": "file:lib/auth-url.ts",
+      "type": "file",
+      "name": "lib/auth-url.ts",
+      "filePath": "lib/auth-url.ts",
+      "summary": "Authentication redirect resolver supporting web origins and Android deep links (marketwatch://auth/callback).",
+      "tags": [
+        "lib",
+        "auth",
+        "deeplink"
+      ]
+    },
+    {
+      "id": "file:types/market.ts",
+      "type": "file",
+      "name": "types/market.ts",
+      "filePath": "types/market.ts",
+      "summary": "Core TypeScript definitions for WatchlistItem, PriceData, PriceAlert, AssetSource, SearchResult, and Indicators.",
+      "tags": [
+        "types",
+        "typescript",
+        "interfaces"
+      ]
+    },
+    {
+      "id": "schema:supabase/schema.sql",
+      "type": "schema",
+      "name": "supabase/schema.sql",
+      "filePath": "supabase/schema.sql",
+      "summary": "PostgreSQL database schema defining watchlists, watchlist_items, price_alerts tables, RLS security policies, and automatic starter seeding triggers.",
+      "tags": [
+        "database",
+        "supabase",
+        "sql",
+        "schema"
+      ]
+    },
+    {
+      "id": "table:supabase/schema.sql:watchlists",
+      "type": "table",
+      "name": "watchlists",
+      "filePath": "supabase/schema.sql",
+      "summary": "Stores user watchlist groups with cascade deletion and user isolation.",
+      "tags": [
+        "database",
+        "table",
+        "watchlists"
+      ]
+    },
+    {
+      "id": "table:supabase/schema.sql:watchlist_items",
+      "type": "table",
+      "name": "watchlist_items",
+      "filePath": "supabase/schema.sql",
+      "summary": "Stores individual tracked asset symbols per watchlist group with uniqueness constraints.",
+      "tags": [
+        "database",
+        "table",
+        "assets"
+      ]
+    },
+    {
+      "id": "table:supabase/schema.sql:price_alerts",
+      "type": "table",
+      "name": "price_alerts",
+      "filePath": "supabase/schema.sql",
+      "summary": "Stores target price alerts and triggering statuses for authenticated users.",
+      "tags": [
+        "database",
+        "table",
+        "alerts"
+      ]
+    },
+    {
+      "id": "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+      "type": "file",
+      "name": "android-webview/MainActivity.java",
+      "filePath": "android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+      "summary": "Native Android activity wrapping the web application in a hardware-accelerated WebView with JavaScriptInterface notification bridge and deep-link OAuth handling.",
+      "tags": [
+        "android",
+        "java",
+        "webview",
+        "native"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:CONTEXT.md",
+      "target": "file:app/page.tsx",
+      "type": "documents"
+    },
+    {
+      "source": "document:CONTEXT.md",
+      "target": "file:assembly/index.ts",
+      "type": "documents"
+    },
+    {
+      "source": "document:AGENTS.md",
+      "target": "config:package.json",
+      "type": "documents"
+    },
+    {
+      "source": "document:android-webview/README.md",
+      "target": "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+      "type": "documents"
+    },
+    {
+      "source": "config:app/globals.css",
+      "target": "file:app/layout.tsx",
+      "type": "configures"
+    },
+    {
+      "source": "config:package.json",
+      "target": "file:app/layout.tsx",
+      "type": "configures"
+    },
+    {
+      "source": "file:app/layout.tsx",
+      "target": "file:app/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/layout.tsx",
+      "target": "file:app/dashboard/layout.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:proxy.ts",
+      "target": "file:app/dashboard/page.tsx",
+      "type": "routes"
+    },
+    {
+      "source": "file:proxy.ts",
+      "target": "file:app/auth/login/page.tsx",
+      "type": "routes"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/layout/Navbar.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/landing/HeroSection.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/landing/MarketTicker.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/landing/MarketSnapshot.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/landing/FeatureCards.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/page.tsx",
+      "target": "file:components/landing/FooterCTA.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:components/layout/Sidebar.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:components/layout/DashboardNav.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:components/layout/MobileTabBar.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/watchlist/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/charts/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/signals/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/options/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/layout.tsx",
+      "target": "file:app/dashboard/alerts/page.tsx",
+      "type": "contains"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:lib/hooks/useWatchlist.ts",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:lib/wasm/loader.ts",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:components/watchlist/WatchlistTable.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:components/watchlist/AddSymbolDialog.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:components/dashboard/MarketSentiment.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:components/dashboard/TopMovers.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "file:components/dashboard/RecentNews.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:components/watchlist/WatchlistTable.tsx",
+      "target": "file:components/watchlist/SparklineChart.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:components/watchlist/WatchlistTable.tsx",
+      "target": "file:components/ui/TickerLogo.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:components/watchlist/WatchlistTable.tsx",
+      "target": "file:lib/wasm/loader.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:components/watchlist/AddSymbolDialog.tsx",
+      "target": "endpoint:app/api/search/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/watchlist/page.tsx",
+      "target": "file:lib/hooks/useWatchlist.ts",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/watchlist/page.tsx",
+      "target": "file:components/ui/TickerLogo.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:lib/hooks/useWatchlist.ts",
+      "target": "table:supabase/schema.sql:watchlists",
+      "type": "reads_from"
+    },
+    {
+      "source": "file:lib/hooks/useWatchlist.ts",
+      "target": "table:supabase/schema.sql:watchlist_items",
+      "type": "writes_to"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "endpoint:app/api/prices/hyperliquid/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "endpoint:app/api/prices/yahoo/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "endpoint:app/api/prices/binance/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "endpoint:app/api/prices/okx/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/page.tsx",
+      "target": "endpoint:app/api/prices/bingx/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/charts/page.tsx",
+      "target": "file:components/charts/HyperliquidChart.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/charts/page.tsx",
+      "target": "file:components/charts/HyperliquidOrderBook.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/charts/page.tsx",
+      "target": "file:components/charts/HyperliquidOrderFlow.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:app/dashboard/charts/page.tsx",
+      "target": "file:components/charts/HyperliquidMarketSearch.tsx",
+      "type": "imports"
+    },
+    {
+      "source": "file:components/charts/HyperliquidChart.tsx",
+      "target": "endpoint:app/api/prices/hyperliquid/candles/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:components/charts/HyperliquidOrderBook.tsx",
+      "target": "endpoint:app/api/prices/hyperliquid/orderflow/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:components/charts/HyperliquidOrderFlow.tsx",
+      "target": "endpoint:app/api/prices/hyperliquid/orderflow/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:components/charts/HyperliquidMarketSearch.tsx",
+      "target": "endpoint:app/api/search/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/signals/page.tsx",
+      "target": "endpoint:app/api/prices/hyperliquid/daily-signals/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/signals/page.tsx",
+      "target": "file:lib/wasm/loader.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:lib/wasm/loader.ts",
+      "target": "file:assembly/index.ts",
+      "type": "implements"
+    },
+    {
+      "source": "file:app/dashboard/options/page.tsx",
+      "target": "endpoint:app/api/options/gex/route.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/options/page.tsx",
+      "target": "file:lib/wasm/loader.ts",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/dashboard/alerts/page.tsx",
+      "target": "table:supabase/schema.sql:price_alerts",
+      "type": "writes_to"
+    },
+    {
+      "source": "file:app/dashboard/alerts/page.tsx",
+      "target": "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+      "type": "calls"
+    },
+    {
+      "source": "file:app/auth/login/page.tsx",
+      "target": "file:lib/auth-url.ts",
+      "type": "imports"
+    },
+    {
+      "source": "file:lib/auth-url.ts",
+      "target": "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+      "type": "routes"
+    },
+    {
+      "source": "endpoint:app/auth/callback/route.ts",
+      "target": "file:proxy.ts",
+      "type": "transforms"
+    },
+    {
+      "source": "schema:supabase/schema.sql",
+      "target": "table:supabase/schema.sql:watchlists",
+      "type": "defines_schema"
+    },
+    {
+      "source": "schema:supabase/schema.sql",
+      "target": "table:supabase/schema.sql:watchlist_items",
+      "type": "defines_schema"
+    },
+    {
+      "source": "schema:supabase/schema.sql",
+      "target": "table:supabase/schema.sql:price_alerts",
+      "type": "defines_schema"
+    },
+    {
+      "source": "table:supabase/schema.sql:watchlists",
+      "target": "table:supabase/schema.sql:watchlist_items",
+      "type": "contains"
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:presentation-landing",
+      "name": "Landing & Public Presentation",
+      "description": "Public entrance, Welcome Dashboard, responsive layout, marketing hero, and live market snapshot.",
+      "nodeIds": [
+        "file:app/page.tsx",
+        "file:app/layout.tsx",
+        "file:components/layout/Navbar.tsx",
+        "file:components/landing/HeroSection.tsx",
+        "file:components/landing/MarketTicker.tsx",
+        "file:components/landing/MarketSnapshot.tsx",
+        "file:components/landing/FeatureCards.tsx",
+        "file:components/landing/FooterCTA.tsx",
+        "config:app/globals.css"
+      ]
+    },
+    {
+      "id": "layer:presentation-dashboard",
+      "name": "Dashboard & Analytical UI",
+      "description": "Core authenticated and guest application pages including multi-group watchlist, interactive charts, quant signals, GEX options analytics, and alert management.",
+      "nodeIds": [
+        "file:app/dashboard/layout.tsx",
+        "file:app/dashboard/page.tsx",
+        "file:app/dashboard/watchlist/page.tsx",
+        "file:app/dashboard/charts/page.tsx",
+        "file:app/dashboard/signals/page.tsx",
+        "file:app/dashboard/options/page.tsx",
+        "file:app/dashboard/alerts/page.tsx",
+        "file:components/layout/Sidebar.tsx",
+        "file:components/layout/DashboardNav.tsx",
+        "file:components/layout/MobileTabBar.tsx",
+        "file:components/watchlist/WatchlistTable.tsx",
+        "file:components/watchlist/AddSymbolDialog.tsx",
+        "file:components/watchlist/SparklineChart.tsx",
+        "file:components/ui/TickerLogo.tsx",
+        "file:components/dashboard/MarketSentiment.tsx",
+        "file:components/dashboard/TopMovers.tsx",
+        "file:components/dashboard/RecentNews.tsx",
+        "file:components/charts/HyperliquidChart.tsx",
+        "file:components/charts/HyperliquidOrderBook.tsx",
+        "file:components/charts/HyperliquidOrderFlow.tsx",
+        "file:components/charts/HyperliquidMarketSearch.tsx"
+      ]
+    },
+    {
+      "id": "layer:state-and-business-logic",
+      "name": "State & Business Logic",
+      "description": "Custom React hooks, client state management, catalog mappers, and authentication helpers.",
+      "nodeIds": [
+        "file:lib/hooks/useWatchlist.ts",
+        "file:lib/hooks/useUser.ts",
+        "file:lib/utils.ts",
+        "file:lib/ticker-logo.ts",
+        "file:lib/hyperliquid-catalog.ts",
+        "file:lib/hyperliquid-market.ts",
+        "file:lib/auth-url.ts",
+        "file:types/market.ts"
+      ]
+    },
+    {
+      "id": "layer:computation-wasm",
+      "name": "High-Performance WASM Engine",
+      "description": "AssemblyScript WebAssembly quantitative computation engine providing sorting, Kalman filters, RSI, SMA, and Black-Scholes Greeks with automatic JavaScript fallback.",
+      "nodeIds": [
+        "file:assembly/index.ts",
+        "file:lib/wasm/loader.ts"
+      ]
+    },
+    {
+      "id": "layer:backend-api-routes",
+      "name": "Server-Side API Proxies & Auth",
+      "description": "Next.js server-side route handlers aggregating multi-exchange market prices (Hyperliquid, Yahoo, Binance, OKX, BingX), option chains, and OAuth handshakes.",
+      "nodeIds": [
+        "file:proxy.ts",
+        "file:app/auth/login/page.tsx",
+        "file:app/auth/register/page.tsx",
+        "endpoint:app/auth/callback/route.ts",
+        "endpoint:app/api/prices/hyperliquid/route.ts",
+        "endpoint:app/api/prices/hyperliquid/candles/route.ts",
+        "endpoint:app/api/prices/hyperliquid/daily-signals/route.ts",
+        "endpoint:app/api/prices/hyperliquid/orderflow/route.ts",
+        "endpoint:app/api/prices/hyperliquid/orderbook/route.ts",
+        "endpoint:app/api/prices/yahoo/route.ts",
+        "endpoint:app/api/prices/binance/route.ts",
+        "endpoint:app/api/prices/okx/route.ts",
+        "endpoint:app/api/prices/bingx/route.ts",
+        "endpoint:app/api/options/gex/route.ts",
+        "endpoint:app/api/search/route.ts"
+      ]
+    },
+    {
+      "id": "layer:data-and-infrastructure",
+      "name": "Database, Native & Configuration",
+      "description": "PostgreSQL database schema on Supabase, Android WebView wrapper with native notification bridges, and configuration files.",
+      "nodeIds": [
+        "schema:supabase/schema.sql",
+        "table:supabase/schema.sql:watchlists",
+        "table:supabase/schema.sql:watchlist_items",
+        "table:supabase/schema.sql:price_alerts",
+        "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+        "config:package.json",
+        "config:tsconfig.json",
+        "config:next.config.ts",
+        "document:README.md",
+        "document:CONTEXT.md",
+        "document:AGENTS.md",
+        "document:android-webview/README.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "1. Project Overview & Architecture",
+      "description": "MarketWatch aggregates live financial data from Yahoo Finance, Hyperliquid, Binance, OKX, and BingX. Start with CONTEXT.md and AGENTS.md for full design decisions and conventions.",
+      "nodeIds": [
+        "document:CONTEXT.md",
+        "document:AGENTS.md",
+        "config:package.json"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "2. Landing Page & Design System",
+      "description": "The public welcome dashboard (app/page.tsx) uses Tailwind v4, Geist fonts, glassmorphic card designs, and a live streaming ticker marquee.",
+      "nodeIds": [
+        "file:app/page.tsx",
+        "file:app/layout.tsx",
+        "file:components/landing/HeroSection.tsx",
+        "config:app/globals.css"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "3. WebAssembly Performance Engine",
+      "description": "High-performance AssemblyScript module compiled to WebAssembly (assembly/index.ts) executing Kalman filters, RSI, SMA, and Black-Scholes Greeks with zero-overhead JS fallback (lib/wasm/loader.ts).",
+      "nodeIds": [
+        "file:assembly/index.ts",
+        "file:lib/wasm/loader.ts"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "4. Watchlist State & Synchronization",
+      "description": "The useWatchlist hook manages guest mode (localStorage) and authenticated cloud synchronization with Supabase PostgreSQL tables.",
+      "nodeIds": [
+        "file:lib/hooks/useWatchlist.ts",
+        "file:app/dashboard/watchlist/page.tsx",
+        "file:components/watchlist/WatchlistTable.tsx",
+        "schema:supabase/schema.sql"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "5. Multi-Source Price API Proxies",
+      "description": "Server-side Next.js route handlers in app/api/prices/ safely proxy data from Hyperliquid, Yahoo Finance, Binance, OKX, and BingX without exposing secrets or triggering CORS issues.",
+      "nodeIds": [
+        "endpoint:app/api/prices/hyperliquid/route.ts",
+        "endpoint:app/api/prices/yahoo/route.ts",
+        "endpoint:app/api/search/route.ts"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "6. Advanced Charts & Order Flow",
+      "description": "TradingView Lightweight Charts candlestick workspace coupled with live Level 2 order books and real-time aggressor trade flow and wall tracking.",
+      "nodeIds": [
+        "file:app/dashboard/charts/page.tsx",
+        "file:components/charts/HyperliquidChart.tsx",
+        "file:components/charts/HyperliquidOrderFlow.tsx"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "7. Quantitative Signals & Options GEX",
+      "description": "Multi-timeframe statistical signals (Kalman filters, momentum, CVD proxy) and options Gamma Exposure analytics (Call/Put walls, Max Pain, Gamma Flip points).",
+      "nodeIds": [
+        "file:app/dashboard/signals/page.tsx",
+        "file:app/dashboard/options/page.tsx",
+        "endpoint:app/api/options/gex/route.ts"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "8. Native Android WebView & Deep Links",
+      "description": "Native Android container wrapping the web application with hardware acceleration, background notification bridges, and OAuth callback handling.",
+      "nodeIds": [
+        "file:android-webview/app/src/main/java/com/marketwatch/app/MainActivity.java",
+        "document:android-webview/README.md",
+        "file:lib/auth-url.ts"
+      ]
+    }
+  ]
+}

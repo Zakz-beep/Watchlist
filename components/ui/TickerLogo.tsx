@@ -1,7 +1,7 @@
 // components/ui/TickerLogo.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getTickerLogo } from "@/lib/ticker-logo";
 
 interface TickerLogoProps {
@@ -15,13 +15,17 @@ interface TickerLogoProps {
 export function TickerLogo({ symbol, name, assetType, size = 36, className = "" }: TickerLogoProps) {
   const logoUrl = getTickerLogo(symbol, assetType);
   const [imgError, setImgError] = useState(false);
-  const [triedFallback, setTriedFallback] = useState(false);
+
+  useEffect(() => setImgError(false), [logoUrl]);
 
   // Generate initials for fallback
   const initials = symbol
-    .replace(/USDT$|USDC$|-USDT$|-USDC$/i, "")
-    .replace(/[^A-Z0-9]/g, "")
-    .slice(0, 2);
+    .split(":")
+    .at(-1)
+    ?.replace(/USDT$|USDC$|-USDT$|-USDC$/i, "")
+    .replace(/[^A-Z0-9]/gi, "")
+    .slice(0, 2)
+    .toUpperCase() || "?";
 
   // Color based on asset type for fallback avatar
   const fallbackColors: Record<string, string> = {
@@ -30,22 +34,11 @@ export function TickerLogo({ symbol, name, assetType, size = 36, className = "" 
     etf:    "from-green-500/30 to-emerald-500/30 border-green-500/30 text-green-300",
     index:  "from-purple-500/30 to-violet-500/30 border-purple-500/30 text-purple-300",
     forex:  "from-orange-500/30 to-red-500/30 border-orange-500/30 text-orange-300",
+    commodity: "from-amber-500/30 to-yellow-500/30 border-amber-500/30 text-amber-300",
   };
   const colors = fallbackColors[assetType] || "from-muted to-muted border-border text-muted-foreground";
 
-  // Handle image error - try FMP fallback then show initials
-  const handleError = () => {
-    if (!triedFallback) {
-      const cleanSym = symbol.replace(/[^A-Z0-9]/gi, "").slice(0, 5);
-      const el = document.querySelector(`[data-ticker="${symbol}"] img`) as HTMLImageElement;
-      if (el) {
-        el.src = `https://financialmodelingprep.com/image-stock/${cleanSym}.png`;
-      }
-      setTriedFallback(true);
-    } else {
-      setImgError(true);
-    }
-  };
+  const handleError = () => setImgError(true);
 
   return (
     <div
