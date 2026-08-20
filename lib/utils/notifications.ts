@@ -53,17 +53,26 @@ export function playAlertChime(type: "success" | "warning" | "danger" = "warning
 }
 
 /**
- * Trigger native vibration on mobile devices (Android / iOS PWA)
+ * Trigger native vibration on mobile devices.
+ * On Android WebView uses the native bridge for reliable haptics.
+ * Falls back to navigator.vibrate on standard mobile browsers.
  */
 export function triggerHaptic(pattern: number[] = [150, 80, 150]) {
-  if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-    try {
-      navigator.vibrate(pattern);
-    } catch {
-      // Ignore vibration error
-    }
+  if (typeof window === "undefined") return;
+
+  // Android native bridge (reliable, bypasses WebView restrictions)
+  const bridge = (window as any).MarketWatchAndroid;
+  if (bridge && typeof bridge.vibrate === "function") {
+    try { bridge.vibrate(pattern.join(",")); } catch {}
+    return;
+  }
+
+  // Standard Web Vibration API
+  if ("vibrate" in navigator) {
+    try { navigator.vibrate(pattern); } catch {}
   }
 }
+
 
 /**
  * Request permission for HTML5 Web Notifications

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_background">#F7F9FC</color>
-    <color name="system_blue">#0A84FF</color>
+    <color name="app_background">#0D0F14</color>
+    <color name="system_blue">#3B82F6</color>
+    <color name="progress_tint">#3B82F680</color>
 </resources>
