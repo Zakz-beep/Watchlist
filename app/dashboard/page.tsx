@@ -134,18 +134,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-screen-2xl mx-auto">
+    <div className="space-y-5 max-w-screen-2xl mx-auto">
       {/* ── Trader Profile Banner Card ── */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="ios-card p-4 sm:p-5 relative overflow-hidden bg-gradient-to-r from-card/80 via-card/50 to-primary/5 border border-border/60"
+        className="ios-card p-4 sm:p-5 border border-border/50 bg-card/60"
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 min-w-0">
             {/* Avatar with click to edit */}
             <div className="relative group cursor-pointer shrink-0" onClick={() => setProfileOpen(true)}>
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 border-primary/40 bg-muted/60 overflow-hidden flex items-center justify-center shadow-md">
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl border border-border/60 bg-muted/40 overflow-hidden flex items-center justify-center shadow-sm">
                 {profile.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-lg font-black text-primary uppercase">
+                  <span className="text-base font-bold text-primary uppercase">
                     {profile.fullName ? profile.fullName.slice(0, 2) : "MW"}
                   </span>
                 )}
@@ -167,7 +167,7 @@ export default function DashboardPage() {
             {/* User Meta */}
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-lg sm:text-xl font-bold truncate tracking-tight">
+                <h3 className="text-base sm:text-lg font-bold truncate tracking-tight">
                   {profile.fullName || "Guest Trader"}
                 </h3>
                 {profile.username && (
@@ -176,12 +176,12 @@ export default function DashboardPage() {
                   </span>
                 )}
                 {user ? (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
                     <UserCheck className="w-2.5 h-2.5" />
-                    Supabase Synced
+                    Synced
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-muted text-muted-foreground border border-border/40 px-2 py-0.5 rounded-full">
                     Guest Mode
                   </span>
                 )}
@@ -193,14 +193,14 @@ export default function DashboardPage() {
                 </p>
               )}
 
-              {/* Social Links */}
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {/* Social Links & Wallet Badge */}
+              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                 {profile.socials?.twitter && (
                   <a
                     href={formatSocialUrl("twitter", profile.socials.twitter)}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-sky-400 bg-muted/40 hover:bg-sky-500/10 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted/80 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
                   >
                     <XTwitterIcon className="w-3 h-3 text-sky-400" />
                     <span>Twitter/X</span>
@@ -211,7 +211,7 @@ export default function DashboardPage() {
                     href={formatSocialUrl("telegram", profile.socials.telegram)}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-blue-400 bg-muted/40 hover:bg-blue-500/10 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted/80 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
                   >
                     <Send className="w-3 h-3 text-blue-400" />
                     <span>Telegram</span>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
                     href={formatSocialUrl("github", profile.socials.github)}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-purple-400 bg-muted/40 hover:bg-purple-500/10 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted/80 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
                   >
                     <GitHubIcon className="w-3 h-3 text-purple-400" />
                     <span>GitHub</span>
@@ -233,7 +233,7 @@ export default function DashboardPage() {
                     href={formatSocialUrl("linkedin", profile.socials.linkedin)}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-blue-500 bg-muted/40 hover:bg-blue-500/10 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted/80 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
                   >
                     <LinkedInIcon className="w-3 h-3 text-blue-500" />
                     <span>LinkedIn</span>
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                     href={formatSocialUrl("website", profile.socials.website)}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-emerald-400 bg-muted/40 hover:bg-emerald-500/10 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted/80 border border-border/40 px-2 py-0.5 rounded-lg transition-colors"
                   >
                     <Globe className="w-3 h-3 text-emerald-400" />
                     <span>Portfolio</span>
@@ -261,33 +261,30 @@ export default function DashboardPage() {
                   </Link>
                 )}
 
-
                 {/* Edit Button */}
                 <button
                   onClick={() => setProfileOpen(true)}
-                  className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-primary/80 bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg transition-colors"
+                  className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted border border-border/40 px-2.5 py-0.5 rounded-lg transition-colors"
                 >
                   <Pencil className="w-3 h-3" />
-                  Edit Profile
+                  Edit
                 </button>
               </div>
             </div>
           </div>
 
-
-
           {/* Quick Action */}
           <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
             <button
               onClick={() => refetch()}
-              className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/70 px-3.5 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all"
+              className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </button>
             <button
               onClick={() => setAddOpen(true)}
-              className="ios-button flex items-center gap-1.5 px-4 py-2 text-xs font-semibold"
+              className="ios-button flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Symbol
@@ -296,29 +293,29 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-
       {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {STATS.map((s) => {
           const Icon = s.icon;
           return (
             <motion.div
               key={s.label}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="ios-card p-4"
+              className="ios-card p-3.5 border border-border/50"
             >
-              <div className="flex items-center gap-2 mb-1">
-                <Icon className={`w-4 h-4 ${s.color}`} />
-                <span className="text-xs text-muted-foreground font-medium">{s.label}</span>
+              <div className="flex items-center justify-between text-muted-foreground mb-1">
+                <span className="text-[11px] font-medium">{s.label}</span>
+                <Icon className={`w-3.5 h-3.5 ${s.color}`} />
               </div>
-              <div className="text-2xl font-bold">{s.value}</div>
+              <div className="text-xl font-bold font-mono tracking-tight">{s.value}</div>
             </motion.div>
           );
         })}
       </div>
 
       {/* Main Content Grid */}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         
         {/* Left Column: Watchlist Table */}

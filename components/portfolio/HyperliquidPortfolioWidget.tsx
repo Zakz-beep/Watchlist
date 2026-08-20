@@ -137,33 +137,33 @@ export function HyperliquidPortfolioWidget({
     <div className="space-y-6">
       {/* ── Top Account Header Card ── */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="ios-card p-5 border border-border/60 relative overflow-hidden bg-gradient-to-br from-card/90 via-card/50 to-emerald-950/10"
+        className="ios-card p-4 sm:p-5 border border-border/50 bg-card/70"
       >
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-border/40 pb-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-border/30 pb-3.5">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
               <Zap className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-base">Hyperliquid L1 Portfolio</h3>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                <h3 className="font-bold text-base tracking-tight">Hyperliquid Portfolio</h3>
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Live Sync (5s)
+                  Live Sync
                 </span>
                 {account?.positions && account.positions.length > 0 && (
-                  <span className="text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/25 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-medium bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full">
                     {account.positions.length} Active Positions
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground font-mono">
+              <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground font-mono">
                 <span>{activeAddress.slice(0, 8)}...{activeAddress.slice(-6)}</span>
                 <button
                   onClick={handleCopy}
-                  className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                   title="Copy address"
                 >
                   {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -172,7 +172,7 @@ export function HyperliquidPortfolioWidget({
                   href={`https://app.hyperliquid.xyz/trade/explorer?address=${activeAddress}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-emerald-400 transition-colors flex items-center gap-0.5"
+                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-emerald-400 transition-colors flex items-center gap-0.5"
                   title="View on Hyperliquid Explorer"
                 >
                   <ExternalLink className="w-3 h-3" />
@@ -185,14 +185,14 @@ export function HyperliquidPortfolioWidget({
             {onOpenEditProfile && (
               <button
                 onClick={onOpenEditProfile}
-                className="px-3 py-1.5 rounded-xl border border-border/60 text-xs font-semibold hover:bg-muted/70 transition-all text-muted-foreground hover:text-foreground"
+                className="px-3 py-1.5 rounded-xl border border-border/50 text-xs font-medium hover:bg-muted/70 transition-all text-muted-foreground hover:text-foreground"
               >
                 Change Wallet
               </button>
             )}
             <button
               onClick={() => refetch()}
-              className="flex items-center gap-1.5 rounded-xl border border-border/60 bg-card/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all"
+              className="flex items-center gap-1.5 rounded-xl border border-border/50 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all"
             >
               <RefreshCw className={cn("w-3 h-3", isFetching && "animate-spin")} />
               Refresh
@@ -201,31 +201,31 @@ export function HyperliquidPortfolioWidget({
         </div>
 
         {/* Account KPI Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-3.5">
           {/* Account Net Worth */}
-          <div className="p-3.5 rounded-2xl bg-muted/30 border border-border/40">
-            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Total Account Value</span>
-            <div className="text-xl sm:text-2xl font-extrabold tracking-tight">
+          <div className="p-3 rounded-xl bg-muted/20 border border-border/30">
+            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Account Value</span>
+            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight">
               ${(account?.accountValue || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className={cn(
-              "text-[11px] font-semibold flex items-center gap-0.5 mt-1",
+              "text-[11px] font-medium flex items-center gap-0.5 mt-1",
               totalUnrealizedPnl >= 0 ? "text-gain" : "text-loss"
             )}>
               {totalUnrealizedPnl >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
               <span>
-                {totalUnrealizedPnl >= 0 ? "+" : ""}${totalUnrealizedPnl.toFixed(2)} Unrealized PnL
+                {totalUnrealizedPnl >= 0 ? "+" : ""}${totalUnrealizedPnl.toFixed(2)} Unrealized
               </span>
             </div>
           </div>
 
           {/* Margin Used */}
-          <div className="p-3.5 rounded-2xl bg-muted/30 border border-border/40">
+          <div className="p-3 rounded-xl bg-muted/20 border border-border/30">
             <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Margin Used</span>
-            <div className="text-xl sm:text-2xl font-extrabold tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight">
               ${(account?.totalMarginUsed || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <div className="w-full bg-muted/60 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div className="w-full bg-muted/50 h-1.5 rounded-full mt-2 overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all",
@@ -235,160 +235,161 @@ export function HyperliquidPortfolioWidget({
               />
             </div>
             <span className="text-[10px] text-muted-foreground font-medium mt-1 block">
-              {marginUsageRatio.toFixed(1)}% Margin Utilization
+              {marginUsageRatio.toFixed(1)}% Utilization
             </span>
           </div>
 
           {/* Withdrawable / Free USD */}
-          <div className="p-3.5 rounded-2xl bg-muted/30 border border-border/40">
-            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Withdrawable (Free Collateral)</span>
-            <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-emerald-400">
+          <div className="p-3 rounded-xl bg-muted/20 border border-border/30">
+            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Withdrawable Collateral</span>
+            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-emerald-400">
               ${(account?.withdrawable || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <span className="text-[10px] text-muted-foreground font-medium mt-1 block">
-              Cross Collateral Available
+              Available Collateral
             </span>
           </div>
 
           {/* Open Positions Count */}
-          <div className="p-3.5 rounded-2xl bg-muted/30 border border-border/40">
-            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Active Perps Exposure</span>
-            <div className="text-xl sm:text-2xl font-extrabold tracking-tight">
+          <div className="p-3 rounded-xl bg-muted/20 border border-border/30">
+            <span className="text-[11px] font-medium text-muted-foreground block mb-0.5">Perps Exposure</span>
+            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight">
               ${totalPositionValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">
-              {account?.positions?.length || 0} Open Positions
+            <span className="text-[10px] text-muted-foreground font-medium mt-1 block">
+              {account?.positions?.length || 0} Open Contracts
             </span>
           </div>
         </div>
       </motion.div>
 
+
       {/* ── Quant Risk Metrics Scoreboard ── */}
       {rm && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="ios-card p-5 border border-border/60 space-y-4"
+          transition={{ delay: 0.04 }}
+          className="ios-card p-4 sm:p-5 border border-border/50 space-y-3.5"
         >
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
-                <Calculator className="w-4 h-4" />
+              <div className="p-1 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                <Calculator className="w-3.5 h-3.5" />
               </div>
               <div>
-                <h4 className="font-bold text-sm">Quantitative Risk & Performance Metrics</h4>
-                <p className="text-[11px] text-muted-foreground">
-                  Institutional grade risk-adjusted returns calculated across {rm.totalTrades} closed trade executions
+                <h4 className="font-bold text-xs sm:text-sm tracking-tight">Performance & Risk Metrics</h4>
+                <p className="text-[10px] text-muted-foreground">
+                  Calculated from {rm.totalTrades} closed trade executions
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-xl bg-muted/60 text-muted-foreground border border-border/40">
-              <span>Win/Loss:</span>
-              <span className="text-gain font-bold">{rm.winningTrades}W</span>
+            <div className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-lg bg-muted/40 text-muted-foreground border border-border/30 font-mono">
+              <span>W/L:</span>
+              <span className="text-gain font-semibold">{rm.winningTrades}W</span>
               <span>/</span>
-              <span className="text-loss font-bold">{rm.losingTrades}L</span>
+              <span className="text-loss font-semibold">{rm.losingTrades}L</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             {/* Sharpe Ratio */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Sharpe Ratio</span>
-                <Scale className="w-3.5 h-3.5 text-blue-400" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Sharpe</span>
+                <Scale className="w-3 h-3 text-blue-400 opacity-80" />
               </div>
               <div className={cn(
-                "text-lg sm:text-xl font-black font-mono",
+                "text-base sm:text-lg font-bold font-mono tracking-tight",
                 rm.sharpeRatio >= 1 ? "text-gain" : rm.sharpeRatio > 0 ? "text-amber-400" : "text-loss"
               )}>
                 {rm.sharpeRatio}
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
-                {rm.sharpeRatio >= 2 ? "★ Exceptional" : rm.sharpeRatio >= 1 ? "Good (>1.0)" : "Volatile"}
+              <span className="text-[9px] text-muted-foreground block">
+                {rm.sharpeRatio >= 2 ? "Exceptional" : rm.sharpeRatio >= 1 ? "Good (>1.0)" : "Volatile"}
               </span>
             </div>
 
             {/* Sortino Ratio */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Sortino Ratio</span>
-                <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Sortino</span>
+                <ShieldCheck className="w-3 h-3 text-purple-400 opacity-80" />
               </div>
               <div className={cn(
-                "text-lg sm:text-xl font-black font-mono",
+                "text-base sm:text-lg font-bold font-mono tracking-tight",
                 rm.sortinoRatio >= 1 ? "text-gain" : rm.sortinoRatio > 0 ? "text-amber-400" : "text-loss"
               )}>
                 {rm.sortinoRatio}
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
+              <span className="text-[9px] text-muted-foreground block">
                 Downside Risk Adj.
               </span>
             </div>
 
             {/* Profit Factor */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Profit Factor</span>
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Profit Factor</span>
+                <Flame className="w-3 h-3 text-amber-400 opacity-80" />
               </div>
               <div className={cn(
-                "text-lg sm:text-xl font-black font-mono",
+                "text-base sm:text-lg font-bold font-mono tracking-tight",
                 rm.profitFactor >= 1.5 ? "text-gain" : rm.profitFactor >= 1 ? "text-amber-400" : "text-loss"
               )}>
                 {rm.profitFactor > 50 ? "50.0+" : rm.profitFactor}
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
+              <span className="text-[9px] text-muted-foreground block">
                 Gross Win / Loss
               </span>
             </div>
 
             {/* Win Rate */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Win Rate (WR)</span>
-                <Percent className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Win Rate</span>
+                <Percent className="w-3 h-3 text-emerald-400 opacity-80" />
               </div>
               <div className={cn(
-                "text-lg sm:text-xl font-black font-mono",
+                "text-base sm:text-lg font-bold font-mono tracking-tight",
                 rm.winRate >= 50 ? "text-gain" : "text-loss"
               )}>
                 {rm.winRate}%
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
-                {rm.winningTrades} of {rm.totalTrades} trades
+              <span className="text-[9px] text-muted-foreground block">
+                {rm.winningTrades} / {rm.totalTrades}
               </span>
             </div>
 
             {/* Max Drawdown */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Max Drawdown</span>
-                <AlertTriangle className="w-3.5 h-3.5 text-loss" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Max Drawdown</span>
+                <AlertTriangle className="w-3 h-3 text-loss opacity-80" />
               </div>
-              <div className="text-lg sm:text-xl font-black font-mono text-loss">
+              <div className="text-base sm:text-lg font-bold font-mono tracking-tight text-loss">
                 -${rm.maxDrawdown.toFixed(0)}
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
-                {rm.maxDrawdownPercent > 0 ? `-${rm.maxDrawdownPercent}% Peak` : "0.0% Peak"}
+              <span className="text-[9px] text-muted-foreground block">
+                {rm.maxDrawdownPercent > 0 ? `-${rm.maxDrawdownPercent}% Peak` : "0% Peak"}
               </span>
             </div>
 
             {/* Net Realized PnL */}
-            <div className="p-3 rounded-2xl bg-muted/30 border border-border/40">
-              <div className="flex items-center justify-between text-muted-foreground mb-1">
-                <span className="text-[11px] font-medium">Net Realized PnL</span>
-                <Award className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="p-2.5 rounded-xl bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                <span className="text-[10px] font-medium">Net Realized</span>
+                <Award className="w-3 h-3 text-emerald-400 opacity-80" />
               </div>
               <div className={cn(
-                "text-lg sm:text-xl font-black font-mono",
+                "text-base sm:text-lg font-bold font-mono tracking-tight",
                 rm.netRealizedPnl >= 0 ? "text-gain" : "text-loss"
               )}>
                 {rm.netRealizedPnl >= 0 ? "+" : ""}${rm.netRealizedPnl.toFixed(2)}
               </div>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">
-                Exp: ${rm.expectancy}/trade
+              <span className="text-[9px] text-muted-foreground block">
+                ${rm.expectancy}/trade
               </span>
             </div>
           </div>
@@ -398,36 +399,35 @@ export function HyperliquidPortfolioWidget({
       {/* ── Performance History Chart ── */}
       {account?.performanceHistory && account.performanceHistory.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className="ios-card p-5 border border-border/60 space-y-4"
+          transition={{ delay: 0.06 }}
+          className="ios-card p-4 sm:p-5 border border-border/50 space-y-3"
         >
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <Activity className="w-4 h-4" />
+              <div className="p-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <Activity className="w-3.5 h-3.5" />
               </div>
               <div>
-                <h4 className="font-bold text-sm">Realized PnL Trajectory & Equity Growth</h4>
-                <p className="text-[11px] text-muted-foreground">Cumulative performance curve across all Hyperliquid trade fills</p>
+                <h4 className="font-bold text-xs sm:text-sm tracking-tight">Cumulative Realized PnL</h4>
+                <p className="text-[10px] text-muted-foreground">Historical equity trajectory</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <span className="text-[10px] uppercase font-bold text-muted-foreground block">Net Realized PnL</span>
-                <span className={cn(
-                  "text-sm font-extrabold",
-                  (rm?.netRealizedPnl || 0) >= 0 ? "text-gain" : "text-loss"
-                )}>
-                  {(rm?.netRealizedPnl || 0) >= 0 ? "+" : ""}${rm?.netRealizedPnl || 0}
-                </span>
-              </div>
+            <div className="text-right">
+              <span className="text-[9px] uppercase font-semibold text-muted-foreground block">Net Realized PnL</span>
+              <span className={cn(
+                "text-xs sm:text-sm font-bold font-mono",
+                (rm?.netRealizedPnl || 0) >= 0 ? "text-gain" : "text-loss"
+              )}>
+                {(rm?.netRealizedPnl || 0) >= 0 ? "+" : ""}${rm?.netRealizedPnl || 0}
+              </span>
             </div>
           </div>
 
           {/* SVG Area Chart */}
+
           <div className="h-44 w-full relative pt-2">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
               <defs>

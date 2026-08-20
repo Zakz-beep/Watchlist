@@ -3,57 +3,57 @@
 
 @layer base {
   :root {
-    --background: 220 18% 97%;
-    --foreground: 224 36% 12%;
+    --background: 220 16% 97%;
+    --foreground: 224 32% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 224 36% 12%;
+    --card-foreground: 224 32% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 36% 12%;
-    --primary: 211 100% 50%;
+    --popover-foreground: 224 32% 12%;
+    --primary: 214 95% 48%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 94%;
-    --secondary-foreground: 224 36% 12%;
-    --muted: 220 18% 94%;
-    --muted-foreground: 220 10% 43%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 220 14% 93%;
+    --secondary-foreground: 224 32% 12%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 220 14% 93%;
+    --accent-foreground: 224 32% 12%;
+    --destructive: 0 80% 58%;
     --destructive-foreground: 210 20% 98%;
-    --border: 220 16% 88%;
-    --input: 220 16% 88%;
-    --ring: 211 100% 50%;
+    --border: 220 13% 89%;
+    --input: 220 13% 89%;
+    --ring: 214 95% 48%;
     --radius: 1rem;
 
     /* Brand / App colors */
-    --brand-primary: 211 100% 50%;   /* iOS system blue */
-    --brand-accent: 262 83% 63%;     /* iOS system purple */
-    --brand-green: 142 71% 45%;      /* gain green */
-    --brand-red: 0 84% 60%;          /* loss red */
-    --brand-gold: 43 96% 56%;        /* gold/amber */
-    --surface-glass: 0 0% 100% / 0.72;
+    --brand-primary: 214 95% 48%;
+    --brand-accent: 258 75% 60%;
+    --brand-green: 142 65% 40%;
+    --brand-red: 0 78% 54%;
+    --brand-gold: 38 92% 50%;
+    --surface-glass: 0 0% 100% / 0.85;
   }
 
   .dark {
-    --background: 223 24% 8%;
-    --foreground: 220 20% 98%;
-    --card: 222 22% 13%;
-    --card-foreground: 220 20% 98%;
-    --popover: 222 22% 13%;
-    --popover-foreground: 220 20% 98%;
-    --primary: 211 100% 56%;
+    --background: 224 28% 5.5%;
+    --foreground: 220 20% 97%;
+    --card: 224 22% 8.5%;
+    --card-foreground: 220 20% 97%;
+    --popover: 224 22% 8.5%;
+    --popover-foreground: 220 20% 97%;
+    --primary: 214 95% 56%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 18% 17%;
-    --secondary-foreground: 220 20% 98%;
-    --muted: 222 18% 17%;
-    --muted-foreground: 220 10% 68%;
-    --accent: 222 18% 17%;
-    --accent-foreground: 220 20% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --secondary: 224 16% 14%;
+    --secondary-foreground: 220 20% 97%;
+    --muted: 224 16% 14%;
+    --muted-foreground: 220 10% 62%;
+    --accent: 224 16% 14%;
+    --accent-foreground: 220 20% 97%;
+    --destructive: 0 65% 48%;
     --destructive-foreground: 210 20% 98%;
-    --border: 222 16% 23%;
-    --input: 222 16% 23%;
-    --ring: 211 100% 56%;
-    --surface-glass: 222 22% 15% / 0.74;
+    --border: 224 14% 18%;
+    --input: 224 14% 18%;
+    --ring: 214 95% 56%;
+    --surface-glass: 224 24% 8% / 0.82;
   }
 }
 
@@ -67,37 +67,39 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
+    letter-spacing: -0.01em;
   }
 }
 
 /* Glassmorphism utility */
 .glass {
   background: hsl(var(--surface-glass));
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid hsl(var(--border) / 0.72);
-  box-shadow: 0 12px 32px hsl(220 30% 20% / 0.06);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 8px 24px hsl(224 30% 6% / 0.08);
 }
 
 .ios-card {
-  background: hsl(var(--card) / 0.82);
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 28px hsl(220 30% 20% / 0.07);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px hsl(224 30% 6% / 0.05);
 }
 
 .ios-button {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   border-radius: 9999px;
-  box-shadow: 0 8px 18px hsl(var(--primary) / 0.24);
-  transition: transform 160ms ease, filter 160ms ease;
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.2);
+  transition: transform 140ms ease, opacity 140ms ease;
 }
 
 .ios-button:active {
-  transform: scale(0.96);
-  filter: brightness(0.94);
+  transform: scale(0.97);
+  opacity: 0.92;
 }
+
 
 /* Animated gradient background */
 .gradient-mesh {

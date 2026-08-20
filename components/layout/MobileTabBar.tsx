@@ -19,9 +19,8 @@ export function MobileTabBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="md:hidden fixed inset-x-3 bottom-3 z-50 rounded-[1.65rem] border border-border/70 glass px-2 py-2 shadow-2xl shadow-slate-950/10">
-      <div className="grid grid-cols-7 gap-1">
-
+    <nav className="md:hidden fixed inset-x-2.5 bottom-2.5 z-50 rounded-2xl border border-border/50 glass px-1.5 py-1.5 shadow-xl shadow-black/10">
+      <div className="grid grid-cols-7 gap-0.5">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const active = pathname === tab.href;
@@ -30,12 +29,14 @@ export function MobileTabBar() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors",
-                active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/70"
+                "flex flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 text-[9px] font-medium transition-all text-center min-w-0",
+                active
+                  ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
-              <Icon className={cn("h-4 w-4", active && "fill-current/10")} />
-              {tab.label}
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="truncate max-w-full px-0.5">{tab.label}</span>
             </Link>
           );
         })}
@@ -43,3 +44,4 @@ export function MobileTabBar() {
     </nav>
   );
 }
+
