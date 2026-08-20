@@ -4,7 +4,9 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+
 import { motion } from "framer-motion";
 import {
   Plus,
@@ -249,6 +251,17 @@ export default function DashboardPage() {
                   </a>
                 )}
 
+                {profile.hyperliquidAddress && (
+                  <Link
+                    href="/dashboard/portfolio"
+                    className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2 py-0.5 rounded-lg transition-colors"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>HL: {profile.hyperliquidAddress.slice(0, 6)}...{profile.hyperliquidAddress.slice(-4)}</span>
+                  </Link>
+                )}
+
+
                 {/* Edit Button */}
                 <button
                   onClick={() => setProfileOpen(true)}
@@ -260,6 +273,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+
 
 
           {/* Quick Action */}

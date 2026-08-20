@@ -69,6 +69,7 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
   const [bio, setBio] = useState(profile.bio || "");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl || "");
   const [socials, setSocials] = useState<SocialLinks>(profile.socials || {});
+  const [hyperliquidAddress, setHyperliquidAddress] = useState(profile.hyperliquidAddress || "");
   
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -83,6 +84,7 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
       setBio(profile.bio || "");
       setAvatarUrl(profile.avatarUrl || "");
       setSocials(profile.socials || {});
+      setHyperliquidAddress(profile.hyperliquidAddress || "");
       setErrorMsg("");
       setSavedSuccess(false);
     }
@@ -135,7 +137,6 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
     reader.readAsDataURL(file);
   };
 
-
   const handleSocialChange = (key: keyof SocialLinks, value: string) => {
     setSocials((prev) => ({
       ...prev,
@@ -148,12 +149,20 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
     setSaving(true);
     setErrorMsg("");
 
+    const cleanHl = hyperliquidAddress.trim();
+    if (cleanHl && !/^0x[a-fA-F0-9]{40}$/.test(cleanHl)) {
+      setErrorMsg("Invalid Ethereum/Hyperliquid wallet address (must be 0x... 42 characters)");
+      setSaving(false);
+      return;
+    }
+
     const result = await onSave({
       fullName: fullName.trim() || "Trader",
       username: username.trim().replace(/^@/, "") || "trader",
       bio: bio.trim(),
       avatarUrl: avatarUrl.trim(),
       socials,
+      hyperliquidAddress: cleanHl,
     });
 
     setSaving(false);
@@ -167,6 +176,7 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
       setErrorMsg(result.error || "Failed to update profile");
     }
   };
+
 
   return (
     <AnimatePresence>
@@ -450,8 +460,68 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
                 </div>
               </div>
 
+              {/* ── 4. Hyperliquid L1 Account & Portfolio Connection ── */}
+              <div className="space-y-3 pt-2 border-t border-border/40">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Hyperliquid Account (L1 Wallet)
+                  </label>
+                  <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    Non-Custodial (Read-Only)
+                  </span>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-medium text-muted-foreground block mb-1">
+                    EVM / Arbitrum Wallet Address (`0x...`)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={hyperliquidAddress}
+                      onChange={(e) => setHyperliquidAddress(e.target.value.trim())}
+                      placeholder="0x1234...5678 (42 characters)"
+                      className="w-full rounded-xl border border-border/60 bg-muted/40 font-mono py-2 pl-3 pr-20 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    {hyperliquidAddress && (
+                      <button
+                        type="button"
+                        onClick={() => setHyperliquidAddress("")}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-muted-foreground hover:text-destructive"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    Connects your Hyperliquid positions, account equity, and PnL performance graph to the dashboard.
+                  </p>
+                </div>
+
+                {/* Quick Demo Addresses */}
+                <div className="flex items-center gap-2 pt-0.5 flex-wrap">
+                  <span className="text-[10px] text-muted-foreground font-medium">Quick test addresses:</span>
+                  <button
+                    type="button"
+                    onClick={() => setHyperliquidAddress("0x5b38da6a701c568545dcfcb03fcb875f56beddc4")}
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/40 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Leaderboard Whale 1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHyperliquidAddress("0x010461c14e146ac35fe42271bdc1134ee31c703a")}
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/40 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Whale 2
+                  </button>
+                </div>
+              </div>
+
               {/* ── Footer Actions ── */}
               <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border/40">
+
                 <button
                   type="button"
                   onClick={onClose}

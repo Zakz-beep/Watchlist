@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BellRing, BrainCircuit, CandlestickChart, LayoutDashboard, Star, Home } from "lucide-react";
+import { BarChart3, BellRing, BrainCircuit, CandlestickChart, LayoutDashboard, Star, Home, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { label: "Home", href: "/", icon: Home },
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Portfolio", href: "/dashboard/portfolio", icon: Wallet },
   { label: "Watchlist", href: "/dashboard/watchlist", icon: Star },
   { label: "Charts", href: "/dashboard/charts", icon: CandlestickChart },
   { label: "Signals", href: "/dashboard/signals", icon: BrainCircuit },
@@ -21,6 +21,7 @@ export function MobileTabBar() {
   return (
     <nav className="md:hidden fixed inset-x-3 bottom-3 z-50 rounded-[1.65rem] border border-border/70 glass px-2 py-2 shadow-2xl shadow-slate-950/10">
       <div className="grid grid-cols-7 gap-1">
+
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const active = pathname === tab.href;

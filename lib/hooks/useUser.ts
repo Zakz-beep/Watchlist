@@ -74,6 +74,7 @@ export function useUser() {
       avatarUrl: avatar || localAvatar || "",
       bio: meta.bio || "",
       socials: meta.socials || {},
+      hyperliquidAddress: meta.hyperliquid_address || "",
     };
   };
 
@@ -154,8 +155,10 @@ export function useUser() {
               avatar_url: safeAvatarUrl,
               bio: merged.bio,
               socials: merged.socials,
+              hyperliquid_address: merged.hyperliquidAddress || "",
             },
           });
+
 
           if (error) throw error;
           if (data.user) {

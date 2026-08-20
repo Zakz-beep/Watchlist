@@ -96,5 +96,47 @@ export interface UserProfile {
   avatarUrl?: string;
   bio?: string;
   socials?: SocialLinks;
+  hyperliquidAddress?: string;
 }
+
+export interface HyperliquidPosition {
+  coin: string;
+  szi: number; // positive = long, negative = short
+  entryPx: number;
+  positionValue: number;
+  unrealizedPnl: number;
+  returnOnEquity: number;
+  liquidationPx: number | null;
+  leverage: {
+    type: "cross" | "isolated";
+    value: number;
+  };
+  marginUsed: number;
+  maxLeverage: number;
+}
+
+export interface HyperliquidSpotBalance {
+  coin: string;
+  total: number;
+  hold: number;
+  entryNtl: number;
+}
+
+export interface HyperliquidAccountSummary {
+  user: string;
+  accountValue: number;
+  totalMarginUsed: number;
+  totalRawUsd: number;
+  withdrawable: number;
+  crossMarginSummary: {
+    accountValue: number;
+    totalMarginUsed: number;
+    totalNtlPos: number;
+    totalRawUsd: number;
+  };
+  positions: HyperliquidPosition[];
+  spotBalances: HyperliquidSpotBalance[];
+  updatedAt: number;
+}
+
 

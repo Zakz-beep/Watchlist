@@ -15,19 +15,22 @@ import {
   LogOut,
   LogIn,
   ChevronRight,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/lib/hooks/useUser";
 import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 
 const NAV_ITEMS = [
-  { label: "Overview",  href: "/dashboard",           icon: LayoutDashboard },
-  { label: "Watchlist", href: "/dashboard/watchlist",  icon: Star },
-  { label: "Charts",    href: "/dashboard/charts",     icon: CandlestickChart },
-  { label: "Signals",   href: "/dashboard/signals",    icon: BrainCircuit },
-  { label: "Options GEX", href: "/dashboard/options",  icon: BarChart3 },
-  { label: "Alerts",    href: "/dashboard/alerts",     icon: BellRing },
+  { label: "Overview",   href: "/dashboard",            icon: LayoutDashboard },
+  { label: "Portfolio",  href: "/dashboard/portfolio",  icon: Wallet },
+  { label: "Watchlist",  href: "/dashboard/watchlist",  icon: Star },
+  { label: "Charts",     href: "/dashboard/charts",     icon: CandlestickChart },
+  { label: "Signals",    href: "/dashboard/signals",    icon: BrainCircuit },
+  { label: "Options GEX", href: "/dashboard/options",   icon: BarChart3 },
+  { label: "Alerts",     href: "/dashboard/alerts",      icon: BellRing },
 ];
+
 
 export function Sidebar() {
   const pathname = usePathname();
