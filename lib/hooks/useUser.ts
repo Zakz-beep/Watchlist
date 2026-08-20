@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { UserProfile } from "@/types/market";
 
 const GUEST_PROFILE_KEY = "marketwatch_guest_profile";
+const LOCAL_AVATAR_KEY = "marketwatch_local_avatar";
 
 const DEFAULT_PROFILE: UserProfile = {
   fullName: "Guest Trader",
@@ -22,25 +23,55 @@ export function useUser() {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  // Parse user_metadata into UserProfile
+  // Parse user_metadata into UserProfile safely without huge cookie bloat
   const parseProfile = (currentUser: User | null): UserProfile => {
+    let localAvatar = "";
+    if (typeof window !== "undefined") {
+      try {
+        localAvatar = localStorage.getItem(LOCAL_AVATAR_KEY) || "";
+      } catch {
+        // ignore
+      }
+    }
+
     if (!currentUser) {
       if (typeof window !== "undefined") {
         try {
           const stored = localStorage.getItem(GUEST_PROFILE_KEY);
-          if (stored) return { ...DEFAULT_PROFILE, ...JSON.parse(stored) };
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            return {
+              ...DEFAULT_PROFILE,
+              ...parsed,
+              avatarUrl: parsed.avatarUrl || localAvatar || "",
+            };
+          }
         } catch {
           // fallback to default
         }
       }
-      return DEFAULT_PROFILE;
+      return { ...DEFAULT_PROFILE, avatarUrl: localAvatar || "" };
     }
 
     const meta = currentUser.user_metadata || {};
+    let avatar = meta.avatar_url || meta.picture || "";
+
+    // If metadata contains an oversized base64 string that bloats cookies (> 2000 chars), use localAvatar and purge from meta
+    if (avatar.length > 2000) {
+      if (typeof window !== "undefined" && !localAvatar) {
+        try {
+          localStorage.setItem(LOCAL_AVATAR_KEY, avatar);
+        } catch {
+          // ignore
+        }
+      }
+      avatar = localAvatar || "";
+    }
+
     return {
       fullName: meta.full_name || meta.name || currentUser.email?.split("@")[0] || "Trader",
       username: meta.username || currentUser.email?.split("@")[0] || "trader",
-      avatarUrl: meta.avatar_url || meta.picture || "",
+      avatarUrl: avatar || localAvatar || "",
       bio: meta.bio || "",
       socials: meta.socials || {},
     };
@@ -53,8 +84,18 @@ export function useUser() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!isMounted) return;
       setUser(user);
-      setProfile(parseProfile(user));
+      const parsed = parseProfile(user);
+      setProfile(parsed);
       setLoading(false);
+
+      // Auto-purge huge base64 from Supabase JWT if present to prevent 494 REQUEST_HEADER_TOO_LARGE
+      if (user?.user_metadata?.avatar_url && user.user_metadata.avatar_url.length > 2000) {
+        supabase.auth.updateUser({
+          data: {
+            avatar_url: "", // clear from cookie JWT payload
+          },
+        }).catch(() => {});
+      }
     });
 
     // 2. Listen to auth changes (sign in, sign out, token refresh, user updated)
@@ -86,14 +127,31 @@ export function useUser() {
       // Optimistic update
       setProfile(merged);
 
+      // If avatarUrl is a local base64 data URL, store in localStorage ONLY to avoid cookie explosion
+      const isBase64 = merged.avatarUrl?.startsWith("data:");
+      if (typeof window !== "undefined") {
+        if (isBase64 && merged.avatarUrl) {
+          try {
+            localStorage.setItem(LOCAL_AVATAR_KEY, merged.avatarUrl);
+          } catch {
+            // ignore
+          }
+        } else if (!merged.avatarUrl) {
+          localStorage.removeItem(LOCAL_AVATAR_KEY);
+        }
+      }
+
       if (user) {
         try {
+          // Never send large base64 data to Supabase auth metadata (keeps JWT cookie < 1KB)
+          const safeAvatarUrl = isBase64 ? "" : (merged.avatarUrl?.slice(0, 1000) || "");
+
           const { data, error } = await supabase.auth.updateUser({
             data: {
               full_name: merged.fullName,
               name: merged.fullName,
               username: merged.username,
-              avatar_url: merged.avatarUrl,
+              avatar_url: safeAvatarUrl,
               bio: merged.bio,
               socials: merged.socials,
             },
@@ -124,10 +182,14 @@ export function useUser() {
   );
 
   const signOut = async () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(LOCAL_AVATAR_KEY);
+    }
     await supabase.auth.signOut();
     setUser(null);
     setProfile(DEFAULT_PROFILE);
   };
+
 
   return { user, profile, loading, updateProfile, signOut };
 }
