@@ -504,19 +504,13 @@ export function EditProfileDialog({ open, onClose, profile, onSave, isGuest }: E
                   <span className="text-[10px] text-muted-foreground font-medium">Quick test addresses:</span>
                   <button
                     type="button"
-                    onClick={() => setHyperliquidAddress("0x5b38da6a701c568545dcfcb03fcb875f56beddc4")}
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/40 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Leaderboard Whale 1
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setHyperliquidAddress("0x010461c14e146ac35fe42271bdc1134ee31c703a")}
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/40 text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 transition-colors"
                   >
-                    Whale 2
+                    Active Trader Whale (175 positions + history)
                   </button>
                 </div>
+
               </div>
 
               {/* ── Footer Actions ── */}

@@ -122,6 +122,41 @@ export interface HyperliquidSpotBalance {
   entryNtl: number;
 }
 
+export interface HyperliquidTradeFill {
+  time: number;
+  coin: string;
+  side: "B" | "A";
+  dir: string;
+  sz: number;
+  px: number;
+  closedPnl: number;
+  fee: number;
+  feeToken: string;
+  hash: string;
+  oid: number;
+  tid: number;
+  crossed: boolean;
+}
+
+export interface PortfolioRiskMetrics {
+  winRate: number; // %
+  profitFactor: number;
+  sharpeRatio: number;
+  sortinoRatio: number;
+  totalTrades: number;
+  winningTrades: number;
+  losingTrades: number;
+  grossProfit: number;
+  grossLoss: number;
+  netRealizedPnl: number;
+  maxDrawdown: number;
+  maxDrawdownPercent: number;
+  avgWin: number;
+  avgLoss: number;
+  payoffRatio: number;
+  expectancy: number;
+}
+
 export interface HyperliquidAccountSummary {
   user: string;
   accountValue: number;
@@ -136,7 +171,10 @@ export interface HyperliquidAccountSummary {
   };
   positions: HyperliquidPosition[];
   spotBalances: HyperliquidSpotBalance[];
+  fills: HyperliquidTradeFill[];
+  riskMetrics: PortfolioRiskMetrics;
   updatedAt: number;
 }
+
 
 
